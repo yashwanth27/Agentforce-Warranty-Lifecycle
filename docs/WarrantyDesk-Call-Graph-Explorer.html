@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="WarrantyDesk — WarrantyDesk Call Graph Explorer">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>WarrantyDesk Call Graph Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap">
+
+<style>
+:root{
+  --paper:#F1F4F3; --surface:#FFFFFF; --surface-2:#E9EEED;
+  --ink:#13191B; --ink-2:#39454A; --muted:#5E6C72;
+  --rule:#D3DBDB; --rule-strong:#B4C0C0;
+  --accent:#0E5F70;
+  /* layer colours */
+  --l-entry:#7A4E9B;   --l-entry-bg:#EFE6F6;
+  --l-config:#8A5A0C;  --l-config-bg:#F7EEDD;
+  --l-orch:#0E5F70;    --l-orch-bg:#DCEAED;
+  --l-logic:#1C6B45;   --l-logic-bg:#DDEDE4;
+  --l-data:#1F5C8F;    --l-data-bg:#DEEAF4;
+  --l-human:#9C3325;   --l-human-bg:#F6E1DD;
+  --f-head:"IBM Plex Sans Condensed","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Serif",Georgia,serif;
+  --f-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1214; --surface:#171E21; --surface-2:#202A2E;
+    --ink:#E7EDEE; --ink-2:#C2CDD1; --muted:#8D9BA1;
+    --rule:#2C363A; --rule-strong:#414F54;
+    --accent:#57B4C6;
+    --l-entry:#C39BE0;  --l-entry-bg:#2A1E36;
+    --l-config:#DFAE5E; --l-config-bg:#332815;
+    --l-orch:#5FBDD0;   --l-orch-bg:#123239;
+    --l-logic:#6BC998;  --l-logic-bg:#12301F;
+    --l-data:#78B4E8;   --l-data-bg:#132738;
+    --l-human:#E89486;  --l-human-bg:#341C18;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1214; --surface:#171E21; --surface-2:#202A2E;
+  --ink:#E7EDEE; --ink-2:#C2CDD1; --muted:#8D9BA1;
+  --rule:#2C363A; --rule-strong:#414F54;
+  --accent:#57B4C6;
+  --l-entry:#C39BE0;  --l-entry-bg:#2A1E36;
+  --l-config:#DFAE5E; --l-config-bg:#332815;
+  --l-orch:#5FBDD0;   --l-orch-bg:#123239;
+  --l-logic:#6BC998;  --l-logic-bg:#12301F;
+  --l-data:#78B4E8;   --l-data-bg:#132738;
+  --l-human:#E89486;  --l-human-bg:#341C18;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+
+header.top{padding:44px 0 18px}
+.eyebrow{font-family:var(--f-head);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h1{font-family:var(--f-head);font-weight:700;font-size:clamp(28px,5vw,44px);line-height:1.05;margin:0 0 12px;text-wrap:balance}
+.lede{margin:0;max-width:64ch;color:var(--ink-2);font-size:17px}
+
+/* toolbar */
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);padding:12px 0 12px;margin-bottom:26px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{
+  font-family:var(--f-head);font-weight:600;font-size:13px;letter-spacing:.02em;
+  padding:7px 13px;border-radius:3px;border:1px solid var(--rule-strong);
+  background:var(--surface);color:var(--ink-2);cursor:pointer;line-height:1.2;
+}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.searchrow{display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap}
+input[type=search]{
+  font-family:var(--f-mono);font-size:13px;padding:7px 11px;border-radius:3px;
+  border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink);
+  min-width:min(320px,100%);
+}
+.hint{font-family:var(--f-head);font-size:12px;color:var(--muted)}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 26px}
+.lg{font-family:var(--f-head);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:2px;border:1px solid}
+.lg.entry{color:var(--l-entry);background:var(--l-entry-bg);border-color:var(--l-entry)}
+.lg.config{color:var(--l-config);background:var(--l-config-bg);border-color:var(--l-config)}
+.lg.orch{color:var(--l-orch);background:var(--l-orch-bg);border-color:var(--l-orch)}
+.lg.logic{color:var(--l-logic);background:var(--l-logic-bg);border-color:var(--l-logic)}
+.lg.data{color:var(--l-data);background:var(--l-data-bg);border-color:var(--l-data)}
+.lg.human{color:var(--l-human);background:var(--l-human-bg);border-color:var(--l-human)}
+
+/* panel headers */
+.ph{margin:0 0 6px}
+.ph h2{font-family:var(--f-head);font-weight:700;font-size:24px;margin:0 0 4px;line-height:1.15}
+.ph p{margin:0 0 22px;color:var(--ink-2);max-width:66ch;font-size:15.5px}
+
+/* ---- chain ---- */
+.chain{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.node{
+  border:1px solid var(--rule-strong);border-left-width:5px;border-radius:4px;
+  background:var(--surface);padding:14px 16px;cursor:pointer;text-align:left;width:100%;
+  transition:box-shadow .12s ease, transform .12s ease;
+}
+.node:hover{box-shadow:0 2px 10px rgba(0,0,0,.09);transform:translateY(-1px)}
+.node.entry{border-left-color:var(--l-entry)}
+.node.config{border-left-color:var(--l-config)}
+.node.orch{border-left-color:var(--l-orch)}
+.node.logic{border-left-color:var(--l-logic)}
+.node.data{border-left-color:var(--l-data)}
+.node.human{border-left-color:var(--l-human)}
+.node-h{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline}
+.node-name{font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--ink);word-break:break-word;line-height:1.3}
+.node-type{font-family:var(--f-head);font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:2px;white-space:nowrap}
+.node-type.entry{color:var(--l-entry);background:var(--l-entry-bg)}
+.node-type.config{color:var(--l-config);background:var(--l-config-bg)}
+.node-type.orch{color:var(--l-orch);background:var(--l-orch-bg)}
+.node-type.logic{color:var(--l-logic);background:var(--l-logic-bg)}
+.node-type.data{color:var(--l-data);background:var(--l-data-bg)}
+.node-type.human{color:var(--l-human);background:var(--l-human-bg)}
+.node-why{margin:7px 0 0;font-size:14.5px;color:var(--ink-2);line-height:1.5}
+.node-more{
+  margin-top:12px;padding-top:12px;border-top:1px dashed var(--rule);
+  display:grid;gap:9px;font-size:13.5px;
+}
+.node[aria-expanded="false"] .node-more{display:none}
+.kv{display:grid;grid-template-columns:104px 1fr;gap:10px;align-items:start}
+.kv dt{font-family:var(--f-head);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.kv dd{margin:0;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;color:var(--ink-2);word-break:break-word}
+.expand-cue{font-family:var(--f-head);font-size:11px;color:var(--muted);margin-top:9px;letter-spacing:.05em}
+.node[aria-expanded="true"] .expand-cue{display:none}
+
+/* connector */
+.link{display:flex;align-items:center;gap:11px;padding:9px 0 9px 22px;min-height:44px}
+.link .bar-v{width:2px;background:var(--rule-strong);align-self:stretch;flex:none;position:relative}
+.link .bar-v::after{content:"";position:absolute;bottom:-1px;left:-4px;border:5px solid transparent;border-top-color:var(--rule-strong)}
+.link .lbl{font-family:var(--f-head);font-size:12.5px;color:var(--muted);line-height:1.4;padding:2px 0}
+
+/* branch */
+.branch{display:grid;gap:12px;margin:4px 0 4px 22px;padding-left:22px;border-left:2px dashed var(--rule-strong)}
+@media(min-width:800px){.branch{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}}
+.bnode{border:1px solid var(--rule);border-radius:4px;background:var(--surface-2);padding:11px 13px}
+.bnode .bt{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.bnode .bd{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.bnode.stop{border-color:var(--l-human);background:var(--l-human-bg)}
+.bnode.stop .bt{color:var(--l-human)}
+
+/* overview */
+.ov{display:grid;gap:14px}
+@media(min-width:760px){.ov{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.ov{grid-template-columns:repeat(3,1fr)}}
+.ovc{border:1px solid var(--rule-strong);border-top-width:4px;border-radius:4px;background:var(--surface);padding:15px 16px;cursor:pointer;text-align:left}
+.ovc:hover{box-shadow:0 2px 10px rgba(0,0,0,.09)}
+.ovc .n{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);display:block;margin-bottom:6px;letter-spacing:.05em}
+.ovc h3{font-family:var(--f-head);font-weight:700;font-size:16.5px;margin:0 0 6px;line-height:1.2}
+.ovc p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.ovc .cnt{margin-top:9px;font-family:var(--f-head);font-size:11.5px;color:var(--muted);letter-spacing:.05em}
+
+/* sequence */
+.seqtools{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.zbtn{font-family:var(--f-head);font-weight:600;font-size:13px;padding:6px 12px;border-radius:3px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);cursor:pointer}
+.zbtn:hover{border-color:var(--accent);color:var(--accent)}
+.seqscroll{overflow:auto;border:1px solid var(--rule-strong);border-radius:4px;background:var(--surface);max-height:78vh}
+#seqsvg{display:block}
+.sq-life{stroke:var(--rule-strong);stroke-width:1.5;stroke-dasharray:5 5}
+.sq-box{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.5}
+.sq-ptitle{font-family:var(--f-head);font-weight:600;font-size:14px;fill:var(--ink)}
+.sq-psub{font-family:var(--f-head);font-size:11.5px;fill:var(--muted)}
+.sq-msg{stroke:var(--ink-2);stroke-width:1.8}
+.sq-msg-ret{stroke:var(--muted);stroke-width:1.6;stroke-dasharray:6 4}
+.sq-label{font-family:var(--f-head);font-size:13.5px;fill:var(--ink)}
+.sq-num{font-family:var(--f-mono);font-size:11.5px;fill:var(--accent)}
+.sq-note{fill:var(--l-config-bg);stroke:var(--l-config);stroke-width:1.5}
+.sq-notetext{font-family:var(--f-head);font-size:12.5px;fill:var(--ink)}
+.sq-selfbox{fill:none;stroke:var(--ink-2);stroke-width:1.8}
+
+.note{margin:22px 0 0;padding:15px 18px;background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:2px;max-width:70ch}
+.note h4{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.note p{margin:0 0 10px;font-size:14.5px;line-height:1.55}
+.note p:last-child{margin-bottom:0}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--surface-2);padding:1px 5px;border-radius:2px}
+.hidden{display:none!important}
+.nores{font-family:var(--f-head);color:var(--muted);padding:26px 0}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--f-head);font-size:12.5px;color:var(--muted);max-width:70ch}
+</style>
+
+<style id="export-print">
+@media print{
+  .toc,.bar{display:none!important}
+  .shell{display:block!important;max-width:none!important;padding:0 8mm 0!important}
+  .sections{gap:24px!important}
+  section{break-inside:auto;page-break-inside:auto}
+  h2{break-after:avoid;page-break-after:avoid}
+  .tw,pre,.note,.action,.mm,.node,.ovc,.seqscroll{break-inside:avoid;page-break-inside:avoid}
+  table{font-size:10.5px!important}
+  body{font-size:12.5px!important}
+  pre{font-size:10px!important}
+  .plate{break-after:page}
+  a{text-decoration:none}
+}
+@page{size:A4;margin:14mm 10mm}
+</style>
+
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">WarrantyDesk · Interactive</p>
+    <h1>Call Graph Explorer</h1>
+    <p class="lede">The same system as the static trace, made navigable. Pick a journey, follow the chain, click any resource for its inputs, outputs and callers.</p>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="searchrow">
+      <input type="search" id="q" placeholder="Search resources — try 'Asset' or 'escalate'" aria-label="Search resources">
+      <span class="hint" id="qhint">Click any card to expand it</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="lg entry">Entry point</span>
+    <span class="lg config">Configuration</span>
+    <span class="lg orch">Orchestration</span>
+    <span class="lg logic">Business logic</span>
+    <span class="lg data">Data layer</span>
+    <span class="lg human">Human routing</span>
+  </div>
+
+  <main id="panel"></main>
+
+  <footer>
+    WarrantyDesk call graph explorer · agent v4 · compiled from live org state in <code>orgfarm-c98efaa88e-dev-ed</code>. Companion to the Execution Trace and the v1 Technical Reference.
+  </footer>
+</div>
+
+<script>
+const L = {entry:"Entry point", config:"Configuration", orch:"Orchestration", logic:"Business logic", data:"Data layer", human:"Human routing"};
+
+const FLOWS = [
+  {
+    id:"f1", tab:"F1 · Order → Warranty", title:"Order activation → warranty creation",
+    blurb:"The only chain that runs without a customer present. Everything downstream depends on it having produced Assets.",
+    steps:[
+      {n:"Order.Status = 'Activated'", t:"Standard Object · DML event", l:"entry",
+       why:"The single event the whole warranty chain hangs off. Seeded by API today; the storefront checkout in v2.",
+       calledBy:"API insert, or a future Experience Cloud checkout", calls:"OrderWarrantyTrigger",
+       din:"—", dout:"Order record with Status = Activated",
+       edge:"platform fires after insert / after update"},
+      {n:"OrderWarrantyTrigger", t:"Apex Trigger", l:"orch",
+       why:"Platform hook holding no business logic — only the filter that decides whether anything should happen at all.",
+       calledBy:"Salesforce platform, on Order DML", calls:"OrderWarrantyService.handleActivation",
+       din:"Trigger.new, Trigger.oldMap", dout:"List<Order> that are newly Activated and not yet mailed",
+       edge:"Status = 'Activated' AND QR_Email_Sent__c != true"},
+      {n:"OrderWarrantyService.handleActivation", t:"Apex Method · static void", l:"logic",
+       why:"All minting and emailing logic in one testable place, kept out of the trigger.",
+       calledBy:"OrderWarrantyTrigger", calls:"sendQrEmails · DML on Asset and Order",
+       din:"List<Order>", dout:"void — side effects are Asset inserts, the guard flag, and an email",
+       edge:"loops OrderItems × Quantity, one iteration per physical unit"},
+      {n:"Asset", t:"Standard Object", l:"data",
+       why:"THE WARRANTY RECORD. One per unit. There is no custom Warranty__c object.",
+       calledBy:"OrderWarrantyService (insert) · RegisterWarrantyAction (update)", calls:"—",
+       din:"SerialNumber SN-{OrderNumber}-{seq}, Status='Shipped', AccountId, ContactId, Product2Id, Order__c, Warranty_Months__c=12",
+       dout:"Persisted Asset rows",
+       edge:"then stamps the idempotency flag"},
+      {n:"Order.QR_Email_Sent__c = true", t:"Custom Field · Checkbox", l:"data",
+       why:"Stops a re-activated order from re-mailing the customer. Read by the trigger on every subsequent run.",
+       calledBy:"OrderWarrantyService", calls:"—", din:"true", dout:"—",
+       edge:"then builds and sends the email"},
+      {n:"OrderWarrantyService.buildHtml", t:"Apex Method · private static", l:"logic",
+       why:"One QR block per serial requires a loop, which an Email Template cannot express. This is exactly why no EmailTemplate exists in this project.",
+       calledBy:"sendQrEmails", calls:"qrImageUrl → appleDeepLink",
+       din:"Order, Contact, List<String> serials", dout:"HTML email body",
+       edge:"per serial"},
+      {n:"OrderWarrantyService.appleDeepLink", t:"Apex Method · static String", l:"logic",
+       why:"The ONE place APPLE_BUSINESS_ID appears. Must stay in step with MessagingChannel.MessagingPlatformKey.",
+       calledBy:"qrImageUrl · buildHtml", calls:"—",
+       din:"serial", dout:"https://bcrw.apple.com/urn:biz:45b81efd-…?biz-intent-id=register_warranty&body=Register%20warranty%20SN-…",
+       edge:"wrapped into a QR image URL, embedded in the email"},
+      {n:"Messaging.sendEmail", t:"Apex platform call", l:"logic",
+       why:"Delivers the QR to the customer's inbox.",
+       calledBy:"sendQrEmails", calls:"—", din:"SingleEmailMessage list", dout:"—",
+       edge:null,
+       fail:"Wrapped in try/catch that logs and swallows. A deliverability setting must never roll back asset creation — the Assets are the durable artifact and the email can be resent."}
+    ],
+    tail:{title:"Where the QR image actually comes from", body:"Salesforce never calls quickchart.io. It writes an <code>&lt;img src&gt;</code> into the email; the <em>recipient's mail client</em> makes that request on open. That is why this org has no Named Credential and no Remote Site Setting — there is no outbound integration at all."}
+  },
+  {
+    id:"f2", tab:"F2 · QR → Registration", title:"QR scan → Apple Messages → registration",
+    blurb:"The journey the QR was built for. Passes through every layer in the system.",
+    steps:[
+      {n:"QR code in the warranty email", t:"Entry point", l:"entry",
+       why:"Encodes an Apple URL, not a web page. No redirect hop exists — the Apple-only decision removed the need for one.",
+       calledBy:"Customer, with a camera", calls:"Apple Messages",
+       din:"—", dout:"bcrw.apple.com deep link",
+       edge:"opens Messages pre-filled with \"Register warranty SN-00000101-1\""},
+      {n:"Apple Messages", t:"iOS app · Entry point", l:"entry",
+       why:"The customer only has to tap send. In testing this step is skipped by typing that same string — byte-for-byte identical input, not a simulation.",
+       calledBy:"The deep link", calls:"MessagingChannel",
+       din:"biz-intent-id, body", dout:"Inbound message to the business ID",
+       edge:"Apple delivers to the org"},
+      {n:"APPLEBUSINESSCHAT_US_45b81efd_…", t:"MessagingChannel · Enhanced · Active", l:"config",
+       why:"The org's Apple endpoint, matched by MessagingPlatformKey. SessionHandlerId alone is the entire agent-routing configuration.",
+       calledBy:"Apple", calls:"MessagingEndUser + MessagingSession, then the agent",
+       din:"Inbound Apple message", dout:"Routed session",
+       edge:"platform creates session records, then checks consent keywords"},
+      {n:"MsgChannelLanguageKeyword", t:"Channel data · en_US", l:"config",
+       why:"Help and opt-out are handled by the platform BEFORE the agent sees anything. 'stop' ends the session and the agent is never invoked.",
+       calledBy:"Platform, on every inbound message", calls:"Auto-response, or passes through",
+       din:"Message text", dout:"Match or no match",
+       edge:"no keyword match → route via SessionHandlerId"},
+      {n:"Warranty_Claims_Agent v4", t:"BotDefinition · Agentforce Service Agent", l:"orch",
+       why:"Runs as lead_creation@…ext. Three linked variables bind from the session so the agent knows who this is without asking.",
+       calledBy:"MessagingChannel.SessionHandlerId", calls:"warranty_router",
+       din:"EndUserId, RoutableId, ContactId — bound automatically",
+       dout:"Conversation turns",
+       edge:"Atlas planner validates EVERY action across EVERY subagent",
+       fail:"One missing Apex class grant in WarrantyDesk_Access disables the ENTIRE agent at this point, and surfaces as the agent hanging mid-sentence rather than as an error."},
+      {n:"warranty_router", t:"start_agent subagent · Topic", l:"orch",
+       why:"Routing only — explicitly instructed not to answer or call business actions. Knows a first message with a serial means a QR scan.",
+       calledBy:"Every new session", calls:"7 @utils.transition targets",
+       din:"First customer message", dout:"Chosen subagent",
+       edge:"@utils.transition go_to_registration"},
+      {n:"registration", t:"Subagent · Topic", l:"orch",
+       why:"Serial → confirm → name → email → register, with three conditional instruction blocks for the three states check_serial can return.",
+       calledBy:"go_to_registration · to_claim reverse", calls:"remember_serial, check_serial, register_warranty",
+       din:"Conversation", dout:"A registered warranty",
+       edge:"records the serial into a variable first"},
+      {n:"remember_serial", t:"@utils.setVariables", l:"orch",
+       why:"check_serial is GATED on serial_number, so the value must land in a variable rather than being filled at call time. One of only two setters left in the agent.",
+       calledBy:"registration", calls:"Agent variable store",
+       din:"Serial from the conversation", dout:"@variables.serial_number",
+       edge:"unlocks check_serial"},
+      {n:"CheckSerialRegistrationAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"Returns three meaningfully different states — unknown serial, known-but-unregistered, already-registered — each with guidance for the agent's next move.",
+       calledBy:"Agent action check_serial [available when serial_number != \"\"]",
+       calls:"WarrantyDesk.assetBySerial, warrantyActive, prettyDate, productLabel → SOQL on Asset",
+       din:"serialNumber",
+       dout:"found, assetId, productName, assetStatus, alreadyRegistered, warrantyActive, warrantyEndDate, contactFirstName, contactId, message",
+       edge:"sets serial_found, which unlocks registration",
+       fail:"An unknown serial is a normal result (found=false with guidance), not an exception. Assets are pre-created at order activation, so no legitimate serial is missing."},
+      {n:"RegisterWarrantyAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"The identity gate. Four checks run before any DML touches a record.",
+       calledBy:"Agent action register_warranty [available when serial_found == True]",
+       calls:"WarrantyDesk.looksLikeEmail, nameMatches → DML on Asset, conditional DML on Contact",
+       din:"serialNumber (from variable), customerName and customerEmail (filled from the transcript)",
+       dout:"success, needsEscalation, productName, serialNumber, warrantyEndDate, message",
+       edge:"on pass, updates the Asset",
+       fail:"Identity mismatch returns needsEscalation=true with NO DML at all. Email must match exactly; the name check accepts either token, because people abbreviate their own names and email is the strict half."},
+      {n:"Asset", t:"Standard Object", l:"data",
+       why:"Where coverage becomes real. Warranty_End_Date__c is stored, not a formula — a commitment made on a date must not move if an input is corrected later.",
+       calledBy:"RegisterWarrantyAction", calls:"—",
+       din:"Status='Registered', PurchaseDate=TODAY, Warranty_End_Date__c=PurchaseDate.addMonths(Warranty_Months__c)",
+       dout:"Committed row",
+       edge:"agent confirms to the customer"},
+      {n:"Confirmation to the customer", t:"Agent response", l:"orch",
+       why:"\"Registered. Model X-200, serial SN-00000101-1, covered until 31 Aug 2027.\"",
+       calledBy:"registration, on registration_done == True", calls:"—",
+       din:"Action outputs only", dout:"Message to Apple",
+       edge:null,
+       fail:"A system-level rule forbids saying anything was registered unless the action returned success. This rule exists because an earlier version announced outcomes it had not achieved."}
+    ]
+  },
+  {
+    id:"f3", tab:"F3 · Claim", title:"Existing customer → claim submission",
+    blurb:"Seven ordered steps. The order is enforced by a gate, not by prose — that distinction is the whole lesson of this flow.",
+    steps:[
+      {n:"\"my pump has stopped working\"", t:"Inbound message · Entry point", l:"entry",
+       why:"Same channel → session → agent chain as F2.",
+       calledBy:"Customer", calls:"warranty_router", din:"—", dout:"—",
+       edge:"@utils.transition go_to_claim"},
+      {n:"claim_intake", t:"Subagent · Topic", l:"orch",
+       why:"Runs seven numbered steps with an explicit instruction not to run two in one message.",
+       calledBy:"go_to_claim · to_claim from registration", calls:"find_products, remember_defect, create_claim",
+       din:"Conversation", dout:"A filed claim",
+       edge:"STEP 1 — always identify the customer first"},
+      {n:"GetCustomerAssetsAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"Identity resolution and coverage inventory in one call. Three fallbacks let the same action serve the live Apple channel and a preview session with no messaging context.",
+       calledBy:"Agent action find_products (ungated)",
+       calls:"WarrantyDesk.contactFromMessaging, assetsForContact, warrantyActive",
+       din:"contactId (session), messagingEndUserId (session), customerEmail (filled from the transcript)",
+       dout:"assetCount, coveredCount, anyWarrantyActive, singleCoveredAssetId, singleCoveredAssetLabel, assetSummary, resolvedContactId, message",
+       edge:"STEP 2 — what happens next depends entirely on the count",
+       fail:"No identity at all returns a message telling the agent to ask for a serial rather than guess. Counts are Decimal, not Integer — Agent Script rejects Integer outputs."},
+      {branch:[
+        {t:"coveredCount == 1", d:"singleCoveredAssetId is populated. The agent names the product and moves on — no picker, one less question."},
+        {t:"coveredCount > 1", d:"singleCoveredAssetId is EMPTY BY DESIGN. The agent lists assetSummary, the customer picks, and the chosen serial is filled into create_claim from the transcript."},
+        {t:"coveredCount == 0", d:"STOP. No claim is filed. The agent apologises and offers paid repair or a human.", stop:true}
+      ]},
+      {n:"Defect category", t:"Agent question", l:"orch",
+       why:"Exactly five options offered: Not Working, Physical Damage, Missing Parts, Wrong Item, Other. Restricted picklist on the Case, so free text would be useless to a rep.",
+       calledBy:"claim_intake", calls:"—", din:"—", dout:"Category string",
+       edge:"STEP 4 — the description, and the gate"},
+      {n:"remember_defect", t:"@utils.setVariables", l:"orch",
+       why:"THE GATE. create_claim carries available when defect_description != \"\", so until this setter runs the filing action is invisible to the planner. It cannot be skipped, only backed out of.",
+       calledBy:"claim_intake", calls:"Agent variable store",
+       din:"Customer's own words", dout:"@variables.defect_description",
+       edge:"STEP 5 — photo request, then STEP 6 — file"},
+      {n:"CreateWarrantyClaimAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"The most heavily guarded action, because it is the one that creates an obligation on the business.",
+       calledBy:"Agent action create_claim [available when defect_description != \"\"]",
+       calls:"WarrantyDesk.assetBySerial, warrantyActive, claimRecordTypeId → DML on Case",
+       din:"assetId (variable — a machine id the model must never invent), serialNumber (transcript), defectCategory, description (variable)",
+       dout:"success, caseNumber, caseId, message",
+       edge:"on pass, inserts the Case",
+       fail:"Four server-side refusals: no resolvable asset; warranty not active (message directs to paid repair); category coerced to 'Other' if invalid; description under 15 characters rejected — a rep cannot triage \"broken\"."},
+      {n:"Case", t:"Standard Object", l:"data",
+       why:"THE CLAIM RECORD. There is no custom Claim__c object.",
+       calledBy:"CreateWarrantyClaimAction", calls:"—",
+       din:"Subject, Description, AssetId, ContactId and AccountId copied from the Asset, Defect_Category__c, Claim_Stage__c='Under Review', RecordTypeId when visible",
+       dout:"CaseNumber, re-queried because insert does not return an auto-number",
+       edge:"STEP 7 — confirm, with the reference",
+       fail:"ContentDocumentLink photo linking sits in its own try/catch — a failed file link must never lose an otherwise valid claim."}
+    ],
+    tail:{title:"Where validation happens, and why two layers is not redundancy",
+      body:"The <strong>script gate</strong> makes the action invisible to the planner. Its job is to shape reasoning — a planner cannot choose an action it cannot see, so a skipped step becomes a wall rather than a silent omission.<br><br>The <strong>Apex guards</strong> re-check everything the gate implies, plus warranty validity, category validity and description length. Their job is to hold when the model is wrong, jailbroken, or when the action is called from outside the agent entirely — including the REST endpoint used for testing.<br><br>Remove either and there is a real hole. The gate alone can be reasoned around by a persuasive conversation; the Apex guard alone produced the live failure where the agent told a customer their claim was filed while the Apex was refusing it."}
+  },
+  {
+    id:"f4", tab:"F4 · Status", title:"Claim status lookup",
+    blurb:"Two lookup strategies in one action — quoted reference first, conversation identity second.",
+    steps:[
+      {n:"\"any update on my claim?\"", t:"Inbound message · Entry point", l:"entry",
+       why:"—", calledBy:"Customer", calls:"warranty_router", din:"—", dout:"—",
+       edge:"@utils.transition go_to_status"},
+      {n:"claim_status", t:"Subagent · Topic", l:"orch",
+       why:"Instructed never to guess at a decision or a timeline the action did not return.",
+       calledBy:"go_to_status · check_first from pickup_scheduling", calls:"look_up_claim",
+       din:"Conversation", dout:"Status message",
+       edge:"look_up_claim (ungated)"},
+      {n:"GetClaimStatusAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"Resolves a claim whether or not the customer remembers the reference.",
+       calledBy:"Agent action look_up_claim",
+       calls:"WarrantyDesk.contactFromMessaging → SOQL on Case",
+       din:"caseNumber (transcript, optional), contactId, messagingEndUserId",
+       dout:"found, claimCount, caseNumber, claimStage, defectCategory, productName, filedOn, pickupSlot, claimSummary, message",
+       edge:"agent states reference, stage and filing time exactly as returned",
+       fail:"No match is a normal result with guidance to offer filing one instead."},
+      {branch:[
+        {t:"Reference quoted", d:"Stripped to digits, matched with a trailing LIKE. \"CLM-00042\", \"claim 42\" and \"00001026\" all resolve to the same Case."},
+        {t:"No reference", d:"Falls back to Contact identity — contactId, else contactFromMessaging on the MessagingEndUser."},
+        {t:"Both paths", d:"Always filtered Claim_Stage__c != null. This keeps ordinary support Cases out of warranty answers even while the Warranty_Claim record type is not yet profile-visible."}
+      ]},
+      {n:"Case", t:"Standard Object", l:"data",
+       why:"Read only in this flow.", calledBy:"GetClaimStatusAction", calls:"—",
+       din:"—", dout:"Up to 10 rows, newest first",
+       edge:null}
+    ]
+  },
+  {
+    id:"f5", tab:"F5 · Pickup", title:"Pickup slot booking",
+    blurb:"The flow with the most honest gap in it — there is no availability system behind the slots.",
+    steps:[
+      {n:"Rep moves Claim_Stage__c to 'Approved-Pending-Pickup'", t:"Manual today", l:"human",
+       why:"The rep phase is not built. No Approval Process and no notification flow exist yet — the stage is moved by hand.",
+       calledBy:"A human, in Salesforce", calls:"—", din:"—", dout:"Case at the approved stage",
+       edge:"later, the customer asks to book"},
+      {n:"pickup_scheduling", t:"Subagent · Topic", l:"orch",
+       why:"Offers windows and books the chosen one.",
+       calledBy:"go_to_pickup · to_pickup from claim_status", calls:"book_pickup, check_first",
+       din:"Conversation", dout:"A booked slot",
+       edge:"offers upcoming weekday windows"},
+      {n:"NO AVAILABILITY LOOKUP EXISTS", t:"Not built", l:"human",
+       why:"There is no calendar, no Salesforce Scheduler, no service-territory query. The agent offers windows from its instructions and the Apple Time Picker returns whatever the customer taps. A v1 simplification, recorded rather than hidden.",
+       calledBy:"—", calls:"—", din:"—", dout:"—",
+       edge:"customer picks a time"},
+      {n:"SchedulePickupAction", t:"Apex @InvocableMethod", l:"logic",
+       why:"Books the window, with the guard that matters most in this flow.",
+       calledBy:"Agent action book_pickup (ungated)", calls:"SOQL + DML on Case",
+       din:"caseNumber (transcript), pickupSlot (Datetime, from the Apple Time Picker)",
+       dout:"success, caseNumber, confirmedSlot, message",
+       edge:"on pass, updates the Case",
+       fail:"Refuses unless Claim_Stage__c is exactly 'Approved-Pending-Pickup' — booking collection for an undecided claim would be a promise the business has not made. The refusal names the actual stage so the agent can explain. Also refuses a slot in the past."},
+      {n:"Case", t:"Standard Object", l:"data",
+       why:"Pickup_Slot__c is a real DateTime rather than a picklist of canned windows, precisely because Apple's Time Picker returns one.",
+       calledBy:"SchedulePickupAction", calls:"—",
+       din:"Pickup_Slot__c, Claim_Stage__c='Pickup Scheduled'", dout:"Committed row",
+       edge:null,
+       fail:"confirmedSlot is formatted in the AGENT USER's timezone, which is why it is set to Asia/Kolkata. Left at the org default it rendered hours off from what an Indian customer expects."}
+    ],
+    tail:{title:"Where conversation state actually lives",
+      body:"<strong>Agent variables</strong> hold only two things: booleans that gate actions, and machine ids the model must never invent. They die with the session.<br><br><strong>Salesforce records</strong> hold everything durable — Asset.Status, Warranty_End_Date__c, Claim_Stage__c, Pickup_Slot__c. This is the real state machine.<br><br><strong>The conversation transcript</strong> holds everything the customer says out loud — email, chosen serial, name, category — filled into actions at the point of use.<br><br>OmniScript state: NOT USED. The rule that decides which store a value goes in: a variable only when an <code>available when</code> guard depends on it. An ungated variable is one more step the planner can skip, and skipping it does not fail loudly — it produces an empty parameter and a confident wrong answer."}
+  },
+  {
+    id:"f6", tab:"F6 · Escalation", title:"Escalation to a human",
+    blurb:"No transfer, no restart. The same session changes who is answering it.",
+    steps:[
+      {n:"Customer asks for a person, or the agent fails twice", t:"Entry point", l:"entry",
+       why:"Reachable from five subagents, so the customer can ask at almost any point.",
+       calledBy:"registration · claim_intake · claim_status · pickup_scheduling · escalation", calls:"@utils.escalate",
+       din:"—", dout:"—",
+       edge:"escalate_now, or go_to_escalation → escalation"},
+      {n:"@utils.escalate", t:"Built-in Agent Script utility", l:"orch",
+       why:"Hands the live session to Omni-Channel. The agent detaches and stops responding. The escalation subagent is instructed to say it is bringing in a colleague BEFORE calling this.",
+       calledBy:"Five subagents", calls:"MessagingChannel.FallbackQueueId",
+       din:"—", dout:"Session handed to Omni",
+       edge:"platform reads FallbackQueueId"},
+      {n:"Warranty_Support", t:"Queue (Group) · 00Gaj00000WJt81EAD", l:"human",
+       why:"Mandatory whenever SessionHandlerId is an agent — the platform rejects the channel config without a fallback queue. Supports MessagingSession and Case. Member: Yashwanth Reddy.",
+       calledBy:"MessagingChannel.FallbackQueueId", calls:"Apple_Routing",
+       din:"MessagingSession as a work item", dout:"Routed work",
+       edge:"distribution governed by the routing config"},
+      {n:"Apple_Routing", t:"QueueRoutingConfig · MostAvailable", l:"config",
+       why:"Decides how work is distributed among available members. Capacity weight 1. Pre-existed from the earlier Apple setup.",
+       calledBy:"Warranty_Support", calls:"sfdc_livemessage matching",
+       din:"Work item", dout:"Target user",
+       edge:"matched against the Messaging work type"},
+      {n:"sfdc_livemessage", t:"ServiceChannel · standard", l:"config",
+       why:"The Messaging work type. Omni only pushes work to someone present on the matching channel.",
+       calledBy:"Omni routing", calls:"ServiceChannelStatus → Available_Messaging",
+       din:"—", dout:"—",
+       edge:"finds users present on this channel"},
+      {n:"Available_Messaging", t:"ServicePresenceStatus · 0N5aj000001mfOUCAY", l:"human",
+       why:"The status a human selects to start receiving conversations. Bound to sfdc_livemessage by ServiceChannelStatus — without that binding the status exists but routes nothing.",
+       calledBy:"A human, in the Omni widget", calls:"—",
+       din:"—", dout:"Presence",
+       edge:"work item appears in the console",
+       fail:"INCOMPLETE: ServicePresenceStatusAccess is not yet granted, so nobody can select this status. An escalated conversation reaches the queue and waits there indefinitely. Every other link in this chain is verified."},
+      {n:"MessagingSession", t:"Standard Object", l:"data",
+       why:"THE SAME SESSION RECORD. Nothing is transferred and nothing restarts — the human takes ownership of the session that already exists, with the full transcript on the record.",
+       calledBy:"Human clicks Accept in the Service Console", calls:"MessagingChannel outbound",
+       din:"—", dout:"Human replies, back out through Apple",
+       edge:null}
+    ],
+    tail:{title:"What the customer experiences",
+      body:"Because the channel, the session and the Apple thread are all unchanged, there is no seam. The replies simply start coming from a person, in the same conversation, on the same iPhone thread."}
+  }
+];
+
+const OVERVIEW = [
+  {n:"01", h:"Order &amp; Warranty Creation", p:"Order activation mints one Asset per unit. Apex trigger plus service class; no Flow involved.", c:"5 resources", go:"f1"},
+  {n:"02", h:"QR &amp; Email", p:"Deep link and QR built in Apex, emailed as HTML. No Email Template, no Named Credential.", c:"4 resources", go:"f1"},
+  {n:"03", h:"Apple Messages", p:"The QR encodes bcrw.apple.com directly. No redirect page exists.", c:"3 resources", go:"f2"},
+  {n:"04", h:"Messaging Channel", p:"Enhanced AppleBusinessChat channel, active. SessionHandlerId is the whole agent routing config.", c:"4 resources", go:"f2"},
+  {n:"05", h:"Agentforce Layer", p:"Warranty_Claims_Agent v4 with eight subagents. Atlas reasoning, not Einstein Bot dialogs.", c:"12 resources", go:"f2"},
+  {n:"06", h:"Registration", p:"Serial → identity verification against the order Contact → Asset flips to Registered.", c:"6 resources", go:"f2"},
+  {n:"07", h:"Claim Intake", p:"Seven ordered steps with a hard gate on the description before filing is possible.", c:"7 resources", go:"f3"},
+  {n:"08", h:"Claim Status", p:"Reference-first lookup with an identity fallback, always scoped to warranty claims.", c:"3 resources", go:"f4"},
+  {n:"09", h:"Pickup Booking", p:"Approval-stage guard, real DateTime from the Apple Time Picker. No availability system behind it.", c:"4 resources", go:"f5"},
+  {n:"10", h:"Omni-Channel Escalation", p:"Same session, different responder. One link — presence access — still incomplete.", c:"7 resources", go:"f6"}
+];
+
+/* ---------- sequence data ---------- */
+const SEQ_P = [
+  {id:"c",  t:"Customer",              s:"iPhone"},
+  {id:"am", t:"Apple Messages",        s:"iOS app"},
+  {id:"mc", t:"MessagingChannel",      s:"APPLEBUSINESSCHAT_US_45b81efd"},
+  {id:"ms", t:"MessagingSession",      s:"+ MessagingEndUser"},
+  {id:"ag", t:"Warranty_Claims_Agent", s:"BotDefinition v4"},
+  {id:"rg", t:"registration",          s:"Subagent"},
+  {id:"a1", t:"CheckSerial…Action",    s:"Apex Invocable"},
+  {id:"a2", t:"RegisterWarrantyAction",s:"Apex Invocable"},
+  {id:"as", t:"Asset",                 s:"Standard Object"}
+];
+const SEQ_M = [
+  {f:"c",  to:"am", l:"Scan QR → deep link opens Messages pre-filled"},
+  {f:"c",  to:"am", l:"Tap send"},
+  {f:"am", to:"mc", l:"Inbound: \"Register warranty SN-00000101-1\""},
+  {f:"mc", to:"ms", l:"Create session + end user"},
+  {note:"Consent keywords checked first. 'help' and 'stop' are answered by the platform and never reach the agent.", over:["mc","ms"]},
+  {f:"mc", to:"ag", l:"Route via SessionHandlerId"},
+  {f:"ms", to:"ag", l:"Bind EndUserId, RoutableId, ContactId", ret:true},
+  {note:"Atlas planner validates EVERY action across EVERY subagent. One missing Apex grant disables the whole agent.", over:["ag","rg"]},
+  {f:"ag", to:"rg", l:"@utils.transition go_to_registration"},
+  {f:"rg", to:"rg", l:"remember_serial sets @variables.serial_number", self:true},
+  {f:"rg", to:"a1", l:"check_serial [gate: serial_number != \"\"]"},
+  {f:"a1", to:"as", l:"SOQL via WarrantyDesk.assetBySerial"},
+  {f:"as", to:"a1", l:"Asset with Contact + Product2", ret:true},
+  {f:"a1", to:"rg", l:"found, productName, contactFirstName", ret:true},
+  {f:"rg", to:"c",  l:"\"That's your Model X-200. Your full name?\""},
+  {f:"c",  to:"rg", l:"Ramesh Patil"},
+  {f:"rg", to:"c",  l:"\"And the email on the order?\""},
+  {f:"c",  to:"rg", l:"yashreddy2781@gmail.com"},
+  {f:"rg", to:"a2", l:"register_warranty [gate: serial_found == True]"},
+  {note:"Identity check: email exact match AND name token match against the order Contact. Mismatch returns needsEscalation with no DML.", over:["a2","as"]},
+  {f:"a2", to:"as", l:"UPDATE Status=Registered, PurchaseDate, Warranty_End_Date__c"},
+  {f:"as", to:"a2", l:"Committed", ret:true},
+  {f:"a2", to:"rg", l:"success=true, warrantyEndDate", ret:true},
+  {f:"rg", to:"c",  l:"\"Registered. Covered until 31 Aug 2027.\""},
+  {note:"A system rule forbids this message unless success == true.", over:["rg","c"]}
+];
+
+/* ---------- render ---------- */
+const panel = document.getElementById("panel");
+const tabsEl = document.getElementById("tabs");
+const TABS = [{id:"ov",label:"Overview"}].concat(FLOWS.map(f=>({id:f.id,label:f.tab}))).concat([{id:"seq",label:"Sequence · Registration"}]);
+let active = "ov";
+
+function esc(s){return String(s).replace(/&(?![a-z]+;|#)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function buildTabs(){
+  tabsEl.innerHTML = TABS.map(t=>
+    `<button class="tab" role="tab" data-go="${t.id}" aria-selected="${t.id===active}">${t.label}</button>`).join("");
+}
+
+function nodeCard(s,i){
+  const fail = s.fail ? `<div class="kv"><dt>If it fails</dt><dd>${esc(s.fail)}</dd></div>` : "";
+  return `<button class="node ${s.l}" aria-expanded="false" data-search="${esc(s.n+" "+s.t+" "+s.why)}">
+    <div class="node-h">
+      <span class="node-name">${esc(s.n)}</span>
+      <span class="node-type ${s.l}">${esc(s.t)}</span>
+    </div>
+    <p class="node-why">${esc(s.why)}</p>
+    <p class="expand-cue">▸ inputs, outputs, callers</p>
+    <dl class="node-more">
+      <div class="kv"><dt>Called by</dt><dd>${esc(s.calledBy)}</dd></div>
+      <div class="kv"><dt>Calls</dt><dd>${esc(s.calls)}</dd></div>
+      <div class="kv"><dt>Data in</dt><dd>${esc(s.din)}</dd></div>
+      <div class="kv"><dt>Data out</dt><dd>${esc(s.dout)}</dd></div>
+      ${fail}
+    </dl>
+  </button>`;
+}
+function linkEl(label){
+  return `<div class="link"><div class="bar-v"></div><div class="lbl">${esc(label)}</div></div>`;
+}
+function branchEl(b){
+  return `<div class="branch">${b.map(x=>
+    `<div class="bnode ${x.stop?"stop":""}"><p class="bt">${esc(x.t)}</p><p class="bd">${esc(x.d)}</p></div>`).join("")}</div>`;
+}
+
+function renderFlow(f){
+  let html = `<div class="ph"><h2>${esc(f.title)}</h2><p>${esc(f.blurb)}</p></div><div class="chain">`;
+  f.steps.forEach((s,i)=>{
+    if(s.branch){ html += branchEl(s.branch); return; }
+    html += nodeCard(s,i);
+    if(s.edge) html += linkEl(s.edge);
+  });
+  html += `</div>`;
+  if(f.tail) html += `<div class="note"><h4>${f.tail.title}</h4><p>${f.tail.body}</p></div>`;
+  return html;
+}
+
+function renderOverview(){
+  return `<div class="ph"><h2>Ten subsystems</h2><p>Click any card to jump into that journey. Every resource named here was verified against the org — the Execution Trace lists what is explicitly NOT USED.</p></div>
+  <div class="ov">${OVERVIEW.map(o=>
+    `<button class="ovc" data-go="${o.go}"><span class="n">${o.n}</span><h3>${o.h}</h3><p>${o.p}</p><p class="cnt">${o.c} →</p></button>`
+  ).join("")}</div>
+  <div class="note"><h4>Why this replaced the single master diagram</h4>
+  <p>Forty-five nodes in one auto-laid-out graph is unreadable at any zoom — the density is the problem, not the type size. Each journey here is a legible chain instead, and the resources that appear in more than one journey are the joints of the system: <code>Asset</code>, <code>Case</code>, <code>warranty_router</code> and <code>WarrantyDesk</code>.</p></div>`;
+}
+
+/* ---------- sequence SVG ---------- */
+function renderSequence(){
+  const PW=210, PAD=28, HEAD=64, ROW=52, NOTEROW=62;
+  const W = PAD*2 + PW*SEQ_P.length;
+  let y = HEAD + 44, rows=[];
+  SEQ_M.forEach(m=>{ rows.push({m,y}); y += m.note ? NOTEROW : (m.self?ROW+16:ROW); });
+  const H = y + 40;
+  const xi = id => PAD + SEQ_P.findIndex(p=>p.id===id)*PW + PW/2;
+
+  let svg = `<svg id="seqsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="currentColor"/>
+    </marker>
+  </defs>`;
+
+  SEQ_P.forEach((p,i)=>{
+    const x = PAD + i*PW + PW/2;
+    svg += `<line class="sq-life" x1="${x}" y1="${HEAD}" x2="${x}" y2="${H-20}"/>`;
+    svg += `<rect class="sq-box" x="${PAD+i*PW+8}" y="12" width="${PW-16}" height="${HEAD-24}" rx="4"/>`;
+    svg += `<text class="sq-ptitle" x="${x}" y="36" text-anchor="middle">${esc(p.t)}</text>`;
+    svg += `<text class="sq-psub" x="${x}" y="52" text-anchor="middle">${esc(p.s)}</text>`;
+  });
+
+  let num=0;
+  rows.forEach(r=>{
+    const m=r.m;
+    if(m.note){
+      const a=xi(m.over[0]), b=xi(m.over[1]);
+      const x1=Math.min(a,b)-70, x2=Math.max(a,b)+70;
+      svg += `<rect class="sq-note" x="${x1}" y="${r.y-16}" width="${x2-x1}" height="44" rx="3"/>`;
+      const words=m.note.split(" ");let line="",lines=[];
+      words.forEach(w=>{ if((line+w).length>62){lines.push(line);line=w+" ";}else line+=w+" ";});
+      lines.push(line);
+      lines.slice(0,2).forEach((ln,k)=>{
+        svg += `<text class="sq-notetext" x="${(x1+x2)/2}" y="${r.y+1+k*16}" text-anchor="middle">${esc(ln.trim())}</text>`;
+      });
+      return;
+    }
+    num++;
+    const x1=xi(m.f), x2=xi(m.to);
+    if(m.self){
+      svg += `<path class="sq-selfbox" style="color:var(--ink-2)" d="M${x1},${r.y-8} h44 v26 h-44" marker-end="url(#ah)"/>`;
+      svg += `<text class="sq-num" x="${x1+52}" y="${r.y-12}">${num}</text>`;
+      svg += `<text class="sq-label" x="${x1+66}" y="${r.y+4}">${esc(m.l)}</text>`;
+      return;
+    }
+    const cls = m.ret ? "sq-msg-ret" : "sq-msg";
+    const col = m.ret ? "var(--muted)" : "var(--ink-2)";
+    svg += `<line class="${cls}" style="color:${col}" x1="${x1}" y1="${r.y}" x2="${x2}" y2="${r.y}" marker-end="url(#ah)"/>`;
+    const mid=(x1+x2)/2;
+    svg += `<text class="sq-num" x="${Math.min(x1,x2)+6}" y="${r.y-8}">${num}</text>`;
+    svg += `<text class="sq-label" x="${mid}" y="${r.y-9}" text-anchor="middle">${esc(m.l)}</text>`;
+  });
+  svg += `</svg>`;
+
+  return `<div class="ph"><h2>Registration sequence</h2><p>The QR-to-registered journey, message by message. Solid arrows are calls, dashed are returns. Amber notes mark the two failure modes that cost the most debugging time.</p></div>
+  <div class="seqtools">
+    <button class="zbtn" data-z="out">− Zoom out</button>
+    <button class="zbtn" data-z="in">+ Zoom in</button>
+    <button class="zbtn" data-z="reset">Reset</button>
+    <span class="hint">Scroll the panel sideways to follow the lifelines</span>
+  </div>
+  <div class="seqscroll" id="seqscroll">${svg}</div>`;
+}
+
+function render(){
+  if(active==="ov") panel.innerHTML = renderOverview();
+  else if(active==="seq") panel.innerHTML = renderSequence();
+  else panel.innerHTML = renderFlow(FLOWS.find(f=>f.id===active));
+  buildTabs();
+  applySearch();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+/* events */
+document.addEventListener("click", e=>{
+  const go = e.target.closest("[data-go]");
+  if(go){ active = go.dataset.go; render(); return; }
+  const n = e.target.closest(".node");
+  if(n){ n.setAttribute("aria-expanded", n.getAttribute("aria-expanded")==="true" ? "false":"true"); return; }
+  const z = e.target.closest("[data-z]");
+  if(z){
+    const svg=document.getElementById("seqsvg"); if(!svg) return;
+    let cur = parseFloat(svg.dataset.scale||"1");
+    if(z.dataset.z==="in") cur=Math.min(cur*1.25,2.5);
+    else if(z.dataset.z==="out") cur=Math.max(cur/1.25,0.5);
+    else cur=1;
+    svg.dataset.scale=cur;
+    const bw=parseFloat(svg.getAttribute("viewBox").split(" ")[2]);
+    const bh=parseFloat(svg.getAttribute("viewBox").split(" ")[3]);
+    svg.setAttribute("width", bw*cur); svg.setAttribute("height", bh*cur);
+  }
+});
+
+const q = document.getElementById("q");
+function applySearch(){
+  const term=(q.value||"").trim().toLowerCase();
+  const hint=document.getElementById("qhint");
+  if(!term){
+    document.querySelectorAll(".node").forEach(n=>n.classList.remove("hidden"));
+    document.querySelectorAll(".link,.branch").forEach(n=>n.classList.remove("hidden"));
+    hint.textContent="Click any card to expand it";
+    document.querySelector(".nores")?.remove();
+    return;
+  }
+  const nodes=[...document.querySelectorAll(".node")];
+  if(!nodes.length){ hint.textContent="Search works inside a journey tab"; return; }
+  let hits=0;
+  nodes.forEach(n=>{
+    const match=(n.dataset.search||"").toLowerCase().includes(term);
+    n.classList.toggle("hidden",!match);
+    if(match){hits++;n.setAttribute("aria-expanded","true");}
+  });
+  document.querySelectorAll(".link,.branch").forEach(n=>n.classList.add("hidden"));
+  hint.textContent = hits ? `${hits} match${hits>1?"es":""} in this journey` : "No match in this journey — try another tab";
+}
+q.addEventListener("input", applySearch);
+
+render();
+</script>
+
+</body>
+</html>

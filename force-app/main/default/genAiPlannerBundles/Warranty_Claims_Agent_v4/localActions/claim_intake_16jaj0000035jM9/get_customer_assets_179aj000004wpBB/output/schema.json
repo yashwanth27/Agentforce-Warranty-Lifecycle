@@ -1,0 +1,70 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "anyWarrantyActive" : {
+      "title" : "Any Warranty Active",
+      "description" : "True when at least one product is still covered",
+      "lightning:type" : "lightning__booleanType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "assetCount" : {
+      "title" : "Registered Product Count",
+      "description" : "How many registered products the customer has",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "assetSummary" : {
+      "title" : "Product List",
+      "description" : "One line per product with its serial, ready to show as a list the customer picks from",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "coveredCount" : {
+      "title" : "Covered Product Count",
+      "description" : "How many are still under warranty",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "message" : {
+      "title" : "Guidance",
+      "description" : "What to do next, written for the agent rather than the customer",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "resolvedContactId" : {
+      "title" : "Resolved Contact Id",
+      "description" : "Contact the products were found under",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "singleCoveredAssetId" : {
+      "title" : "Single Covered Product Id",
+      "description" : "Filled only when exactly one product is covered. Empty when the customer must choose.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "singleCoveredAssetLabel" : {
+      "title" : "Single Covered Product",
+      "description" : "Readable name and serial of the only covered product",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QR_Email_Sent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Idempotency guard so re-activation does not resend warranty QR emails</description>
+    <label>QR Email Sent</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

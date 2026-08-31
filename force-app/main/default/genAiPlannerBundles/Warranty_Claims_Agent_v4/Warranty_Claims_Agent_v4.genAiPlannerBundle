@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Registers product warranties and files warranty claims for customers over Apple Messages for Business.</description>
+    <localTopicLinks>
+        <genAiPluginName>ambiguous_question_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>claim_intake_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>claim_status_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>escalation_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>off_topic_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>pickup_scheduling_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>registration_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>warranty_router_16jaj0000035jM9</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>registration_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Registers a product warranty from a serial number and reports whether a serial is already registered.</description>
+        <developerName>registration_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpB7</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpB7</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>check_serial_179aj000004wpB7</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>register_warranty_179aj000004wpB7</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>check_serial_179aj000004wpB7</fullName>
+            <description>Look up a product serial number and report whether it exists, whether it is already registered, and until when it is covered.</description>
+            <developerName>check_serial_179aj000004wpB7</developerName>
+            <invocationTarget>CheckSerialRegistrationAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>check_serial</localDeveloperName>
+            <masterLabel>Check Serial Registration</masterLabel>
+            <progressIndicatorMessage>Looking up that serial number...</progressIndicatorMessage>
+        </localActions>
+        <localActions>
+            <fullName>register_warranty_179aj000004wpB7</fullName>
+            <description>Verify the supplied name and email against the person who placed the order, then activate the warranty and return the coverage end date.</description>
+            <developerName>register_warranty_179aj000004wpB7</developerName>
+            <invocationTarget>RegisterWarrantyAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>register_warranty</localDeveloperName>
+            <masterLabel>Register Warranty</masterLabel>
+            <progressIndicatorMessage>Registering your warranty...</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>registration</localDeveloperName>
+        <masterLabel>Warranty Registration</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>pickup_scheduling_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Books a collection slot for a warranty claim that the team has approved.</description>
+        <developerName>pickup_scheduling_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpB8</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpB8</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>schedule_pickup_179aj000004wpB8</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>schedule_pickup_179aj000004wpB8</fullName>
+            <description>Book the pickup window the customer chose for an approved warranty claim.</description>
+            <developerName>schedule_pickup_179aj000004wpB8</developerName>
+            <invocationTarget>SchedulePickupAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>schedule_pickup</localDeveloperName>
+            <masterLabel>Schedule Pickup</masterLabel>
+            <progressIndicatorMessage>Booking your pickup...</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>pickup_scheduling</localDeveloperName>
+        <masterLabel>Pickup Scheduling</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>ambiguous_question_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Asks for clarification when the request is too vague to route or act on.</description>
+        <developerName>ambiguous_question_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpBE</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpBE</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>ambiguous_question</localDeveloperName>
+        <masterLabel>Ambiguous Question</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>off_topic_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Redirects anything that is not warranty registration or a warranty claim, such as pricing, sales or general questions.</description>
+        <developerName>off_topic_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpBC</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpBC</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>off_topic</localDeveloperName>
+        <masterLabel>Off Topic</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>claim_status_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Reports the current progress of a warranty claim that has already been filed.</description>
+        <developerName>claim_status_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpBD</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpBD</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>claim_status_179aj000004wpBD</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>claim_status_179aj000004wpBD</fullName>
+            <description>Report the current stage of a warranty claim, by reference or for the customer in this conversation.</description>
+            <developerName>claim_status_179aj000004wpBD</developerName>
+            <invocationTarget>GetClaimStatusAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>claim_status</localDeveloperName>
+            <masterLabel>Get Claim Status</masterLabel>
+            <progressIndicatorMessage>Checking your claim...</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>claim_status</localDeveloperName>
+        <masterLabel>Claim Status</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>warranty_router_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Route the customer to registration, claim filing, claim status, pickup booking, or a human.</description>
+        <developerName>warranty_router_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpBA</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpBA</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>warranty_router</localDeveloperName>
+        <masterLabel>Warranty Router</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>claim_intake_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Files a warranty claim for a product that is faulty, damaged, incomplete or wrong.</description>
+        <developerName>claim_intake_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpBB</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpBB</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>get_customer_assets_179aj000004wpBB</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>create_claim_179aj000004wpBB</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>create_claim_179aj000004wpBB</fullName>
+            <description>File a warranty claim against a covered product. Refuses when the warranty has expired or the description is too short.</description>
+            <developerName>create_claim_179aj000004wpBB</developerName>
+            <invocationTarget>CreateWarrantyClaimAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>create_claim</localDeveloperName>
+            <masterLabel>Create Warranty Claim</masterLabel>
+            <progressIndicatorMessage>Filing your claim...</progressIndicatorMessage>
+        </localActions>
+        <localActions>
+            <fullName>get_customer_assets_179aj000004wpBB</fullName>
+            <description>List the registered products belonging to this customer and flag which are still under warranty.</description>
+            <developerName>get_customer_assets_179aj000004wpBB</developerName>
+            <invocationTarget>GetCustomerAssetsAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>get_customer_assets</localDeveloperName>
+            <masterLabel>Get Customer Products</masterLabel>
+            <progressIndicatorMessage>Checking your products...</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>claim_intake</localDeveloperName>
+        <masterLabel>Claim Intake</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>escalation_16jaj0000035jM9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Hands the conversation to a human support agent when the customer asks for a person or when the agent cannot help.</description>
+        <developerName>escalation_16jaj0000035jM9</developerName>
+        <genAiPluginInstructions>
+            <description>You are WarrantyDesk, the warranty assistant for a pump manufacturer, talking to customers in Apple Messages.
+You do exactly two jobs: register product warranties, and file warranty claims. Nothing else.
+Every fact you state about a product, a warranty date or a claim must come from an action result. Never invent one.
+Never tell a customer that something has been registered, filed or booked unless the action returned a success result. If an action did not run, or returned success = false, say what is still needed instead.
+When an action takes a value the customer has already given you in this conversation - an email address, a serial number, a product choice - pass that value into the action. Never call an action with an empty value for something the customer has told you.
+Never approve, reject, or predict the outcome of a claim. Claims are decided by the warranty team, not by you.
+Keep replies short and warm, two or three sentences, the length of a text message.</description>
+            <developerName>instruction0_179aj000004wpB9</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wpB9</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>escalation</localDeveloperName>
+        <masterLabel>Escalation</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Warranty Claims Agent</masterLabel>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>

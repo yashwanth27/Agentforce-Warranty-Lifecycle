@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
+    <agentDSLEnabled>true</agentDSLEnabled>
+    <agentTemplate>SvcCopilotTmpl__AgentforceServiceAgent</agentTemplate>
+    <agentType>EinsteinServiceAgent</agentType>
+    <botMlDomain>
+        <label>Claude Test Agent</label>
+        <name>Claude_Test_Agent</name>
+    </botMlDomain>
+    <botSource>None</botSource>
+    <botUser>lead_creation@00daj000010qw9e1503930973.ext</botUser>
+    <description>Minimal test agent created via the NextGen Authoring Connect API to verify headless agent creation.</description>
+    <label>Claude Test Agent</label>
+    <logPrivateConversationData>false</logPrivateConversationData>
+    <richContentEnabled>true</richContentEnabled>
+    <sessionTimeout>0</sessionTimeout>
+    <type>ExternalCopilot</type>
+</Bot>

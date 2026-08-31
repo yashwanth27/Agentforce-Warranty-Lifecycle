@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ============================================================
+         Code. Wildcards, so new classes, LWCs and Aura bundles are
+         picked up on future retrieves without editing this file.
+         ============================================================ -->
+    <types>
+        <members>*</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTestSuite</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>StaticResource</name>
+    </types>
+
+    <!-- ============================================================
+         Objects. '*' returns CUSTOM objects only — standard objects
+         must be named explicitly. All seven WarrantyDesk fields live
+         on standard objects, so dropping Asset/Order/Case here
+         silently loses every one of them.
+
+         Retrieving at object level also brings record types, business
+         processes, validation rules and list views, so fields never
+         need listing individually.
+         ============================================================ -->
+    <types>
+        <members>*</members>
+        <members>Asset</members>
+        <members>Order</members>
+        <members>Case</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- ============================================================
+         Declarative
+         ============================================================ -->
+    <types>
+        <members>*</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>QuickAction</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <!-- ============================================================
+         Security
+         ============================================================ -->
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PermissionSetGroup</name>
+    </types>
+
+    <!-- ============================================================
+         Omni-Channel and messaging
+         ============================================================ -->
+    <types>
+        <members>*</members>
+        <name>Queue</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>QueueRoutingConfig</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ServiceChannel</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ServicePresenceStatus</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PresenceUserConfig</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>MessagingChannel</name>
+    </types>
+
+    <version>67.0</version>
+</Package>

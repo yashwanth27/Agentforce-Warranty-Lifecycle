@@ -1,0 +1,14 @@
+{
+  "required" : [ "serialNumber" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "serialNumber" : {
+      "title" : "Serial Number",
+      "description" : "Serial printed near the QR sticker, for example SN-00042-1",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

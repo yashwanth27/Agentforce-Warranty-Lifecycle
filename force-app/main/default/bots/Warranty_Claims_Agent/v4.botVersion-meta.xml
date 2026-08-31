@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BotVersion xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>v4</fullName>
+    <articleAnswersGPTEnabled>false</articleAnswersGPTEnabled>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>Hi! I can register your product warranty or help you file a claim. What do you need?</message>
+                <messageIdentifier>76b22b78-0a18-46e0-a107-8dc055a3c570</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>5508584a-ec00-405b-90f2-175ff09bac17</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>7b2d55eb-60eb-4d57-a271-1edccc89ff4c</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Welcome</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Welcome</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>Something went wrong on my side. Say &apos;talk to support&apos; and I will bring in a person.</message>
+                <messageIdentifier>87ea02aa-8ffb-4cb7-bae7-25b09449d5c0</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>b314f5d4-e612-4da0-a7fe-3784b392f2c5</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>a4d9cbd1-2b57-452c-8578-f682311383aa</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Rich_Content_Error_Handling</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Error Handler</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <botSteps>
+            <conversationSystemMessage>
+                <type>Transfer</type>
+            </conversationSystemMessage>
+            <stepIdentifier>22a8e69a-8dd7-409a-a947-ef8131eadc8a</stepIdentifier>
+            <type>SystemMessage</type>
+        </botSteps>
+        <developerName>Transfer_To_Agent</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Transfer To Agent</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <citationsEnabled>false</citationsEnabled>
+    <conversationDefinitionPlanners>
+        <genAiPlannerName>Warranty_Claims_Agent_v4</genAiPlannerName>
+    </conversationDefinitionPlanners>
+    <conversationSystemDialogs>
+        <dialog>Rich_Content_Error_Handling</dialog>
+        <type>ErrorHandling</type>
+    </conversationSystemDialogs>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>What the customer said is wrong with the product, in their own words</description>
+        <developerName>defect_description</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Defect Description</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Reference of the claim filed or discussed in this conversation</description>
+        <developerName>claim_number</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Claim Number</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Record id of the product the claim is for - set by the product lookup only when exactly one product is covered</description>
+        <developerName>claim_asset_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Claim Asset Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The agent instructions</description>
+        <developerName>AgentScriptInternal_agent_instructions</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Agent Instructions</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>True once a serial has been confirmed against our records</description>
+        <developerName>serial_found</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Serial Found</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Product name in scope</description>
+        <developerName>product_name</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Product Name</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Serial number being registered</description>
+        <developerName>serial_number</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Serial Number</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>True once this conversation has registered the warranty</description>
+        <developerName>registration_done</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Registration Done</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>Runtime condition evaluation for if statements</description>
+        <developerName>AgentScriptInternal_condition_1</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Runtime Condition 1</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>First name from the order contact</description>
+        <developerName>customer_first_name</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Customer First Name</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>True when the serial in scope is already registered</description>
+        <developerName>already_registered</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Already Registered</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>True only when an action returned a filed claim reference</description>
+        <developerName>claim_filed</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Claim Filed</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Record id of the product being registered</description>
+        <developerName>asset_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Asset Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The next topic to be visited</description>
+        <developerName>AgentScriptInternal_next_topic</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Next Topic</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Readable coverage end date returned by an action</description>
+        <developerName>warranty_end_date</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Warranty End Date</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>True only when a covered product has been confirmed by an action</description>
+        <developerName>warranty_active</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Warranty Active</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <copilotPrimaryLanguage>en_US</copilotPrimaryLanguage>
+    <defaultStdObjForContactIdFltrEnabled>false</defaultStdObjForContactIdFltrEnabled>
+    <entryDialog>Welcome</entryDialog>
+    <intentDisambiguationEnabled>false</intentDisambiguationEnabled>
+    <intentV3Enabled>false</intentV3Enabled>
+    <isScriptCompatibleAgent>true</isScriptCompatibleAgent>
+    <knowledgeActionEnabled>false</knowledgeActionEnabled>
+    <knowledgeFallbackEnabled>false</knowledgeFallbackEnabled>
+    <smallTalkEnabled>false</smallTalkEnabled>
+    <staticPromptsEnabled>false</staticPromptsEnabled>
+    <stopRecPrompts>false</stopRecPrompts>
+    <stopWelcomePrompts>false</stopWelcomePrompts>
+    <surfacesEnabled>false</surfacesEnabled>
+    <toneType>Casual</toneType>
+</BotVersion>

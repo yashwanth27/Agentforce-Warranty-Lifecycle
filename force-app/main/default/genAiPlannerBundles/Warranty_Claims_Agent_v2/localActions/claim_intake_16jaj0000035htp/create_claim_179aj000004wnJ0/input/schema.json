@@ -1,0 +1,42 @@
+{
+  "required" : [ "defectCategory", "description" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "assetId" : {
+      "title" : "Product Record Id",
+      "description" : "Product the claim is filed against",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "contentDocumentId" : {
+      "title" : "Photo File Id",
+      "description" : "Id of the photo the customer sent, when it is already stored",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "defectCategory" : {
+      "title" : "Defect Category",
+      "description" : "Exactly one of Not Working, Physical Damage, Missing Parts, Wrong Item, Other",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "description" : {
+      "title" : "Description",
+      "description" : "What the customer described, in their own words",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "serialNumber" : {
+      "title" : "Serial Number",
+      "description" : "Alternative to the product record id",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,42 @@
+{
+  "required" : [ "defectCategory", "description" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "assetId" : {
+      "title" : "Product Record Id",
+      "description" : "Set automatically when only one product is covered. Do not invent a value for this.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "contentDocumentId" : {
+      "title" : "Photo File Id",
+      "description" : "Id of the photo the customer sent, when it is already stored",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "defectCategory" : {
+      "title" : "Defect Category",
+      "description" : "Exactly one of Not Working, Physical Damage, Missing Parts, Wrong Item, Other",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "description" : {
+      "title" : "Description",
+      "description" : "What the customer described, in their own words. At least 15 characters.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "serialNumber" : {
+      "title" : "Serial Number",
+      "description" : "Serial of the product the customer chose to claim against, copied exactly from the product list you showed them",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="WarrantyDesk — WarrantyDesk Execution Trace">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>WarrantyDesk Execution Trace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --paper:#F1F4F3; --surface:#FFFFFF; --surface-2:#E9EEED;
+  --ink:#13191B; --ink-2:#39454A; --muted:#5E6C72;
+  --rule:#D3DBDB; --rule-strong:#B4C0C0;
+  --accent:#0E5F70; --accent-soft:#DCEAED;
+  --ok:#1C6B45; --ok-soft:#DCEBE2;
+  --warn:#8A5A0C; --warn-soft:#F2E7D2;
+  --stop:#9C3325; --stop-soft:#F3DDD9;
+  --f-head:"IBM Plex Sans Condensed","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --measure:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1214; --surface:#161C1F; --surface-2:#1E262A;
+    --ink:#E7EDEE; --ink-2:#BCC8CC; --muted:#8D9BA1;
+    --rule:#2A3337; --rule-strong:#3C484D;
+    --accent:#57B4C6; --accent-soft:#12333A;
+    --ok:#5CBE8C; --ok-soft:#122E22;
+    --warn:#D7A250; --warn-soft:#2F2515;
+    --stop:#E08476; --stop-soft:#331A16;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1214; --surface:#161C1F; --surface-2:#1E262A;
+  --ink:#E7EDEE; --ink-2:#BCC8CC; --muted:#8D9BA1;
+  --rule:#2A3337; --rule-strong:#3C484D;
+  --accent:#57B4C6; --accent-soft:#12333A;
+  --ok:#5CBE8C; --ok-soft:#122E22;
+  --warn:#D7A250; --warn-soft:#2F2515;
+  --stop:#E08476; --stop-soft:#331A16;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{max-width:1080px;margin:0 auto;padding:0 22px 96px}
+@media (min-width:1180px){
+  .shell{max-width:1340px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:56px;align-items:start}
+  .shell > .plate, .shell > .sections{grid-column:2}
+  .toc{grid-column:1;grid-row:1 / span 3}
+}
+.plate{margin:52px 0 40px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);overflow:hidden}
+.plate-top{padding:26px 26px 22px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:var(--f-head);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.plate h1{font-family:var(--f-head);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.04;letter-spacing:-.005em;margin:0 0 12px;text-wrap:balance}
+.plate .standfirst{margin:0;max-width:62ch;color:var(--ink-2);font-size:17px}
+.plate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.plate-cell{padding:16px 26px 18px;border-right:1px solid var(--rule)}
+.plate-cell:last-child{border-right:none}
+.plate-cell dt{font-family:var(--f-head);font-size:10.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.plate-cell dd{margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.45;color:var(--ink);word-break:break-word}
+.toc{display:none;position:sticky;top:24px;padding-top:58px;font-family:var(--f-head);max-height:calc(100vh - 48px);overflow-y:auto}
+@media (min-width:1180px){.toc{display:block}}
+.toc p{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 12px}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.toc a{display:flex;gap:9px;text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.35;padding:5px 8px 5px 10px;border-left:2px solid transparent}
+.toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+.toc a .n{color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.6em}
+.sections{display:flex;flex-direction:column;gap:56px}
+section{scroll-margin-top:20px}
+h2{font-family:var(--f-head);font-weight:700;font-size:26px;line-height:1.15;margin:0 0 6px;padding-bottom:10px;border-bottom:2px solid var(--ink);display:flex;align-items:baseline;gap:12px;text-wrap:balance}
+h2 .n{font-size:13px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+h3{font-family:var(--f-head);font-weight:600;font-size:17.5px;margin:30px 0 8px}
+h4{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:22px 0 7px}
+p{margin:0 0 14px;max-width:var(--measure)}
+section > p:first-of-type{margin-top:16px}
+ul,ol.body-list{margin:0 0 14px;padding-left:20px;max-width:var(--measure)}
+li{margin-bottom:6px}
+strong{font-weight:600}
+em{font-style:italic}
+code{font-family:var(--f-mono);font-size:.855em;background:var(--surface-2);padding:1px 5px;border-radius:2px;word-break:break-word}
+.tw{overflow-x:auto;margin:18px 0 20px;border:1px solid var(--rule);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+thead th{font-family:var(--f-head);font-weight:600;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.api,th.api{font-family:var(--f-mono);font-size:12px}
+td.nw{white-space:nowrap}
+.chip{display:inline-block;font-family:var(--f-head);font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;border-radius:2px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.stop{background:var(--stop-soft);color:var(--stop)}
+.chip.info{background:var(--accent-soft);color:var(--accent)}
+.note{margin:18px 0;padding:15px 18px;background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:2px;max-width:var(--measure)}
+.note.warn{border-left-color:var(--warn)}
+.note.stop{border-left-color:var(--stop)}
+.note h4{margin:0 0 6px}
+.note p{max-width:none}
+.note p:last-child{margin-bottom:0}
+pre{font-family:var(--f-mono);font-size:12.5px;line-height:1.55;background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:14px 16px;overflow-x:auto;margin:16px 0 20px}
+pre code{background:none;padding:0;font-size:inherit;word-break:normal}
+pre.trace{border-left:3px solid var(--accent);font-size:12px;line-height:1.7}
+pre.dep{border-left:3px solid var(--muted);font-size:12px;line-height:1.65}
+.mm{background:#FFFFFF;border:1px solid var(--rule-strong);border-radius:3px;padding:18px 14px;overflow-x:auto;margin:18px 0 8px}
+.mm-cap{font-family:var(--f-head);font-size:12.5px;color:var(--muted);margin:0 0 20px;max-width:var(--measure)}
+hr.div{border:none;border-top:1px solid var(--rule);margin:26px 0}
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);font-family:var(--f-head);font-size:12.5px;color:var(--muted);max-width:var(--measure)}
+</style>
+
+<style id="export-print">
+@media print{
+  .toc,.bar{display:none!important}
+  .shell{display:block!important;max-width:none!important;padding:0 8mm 0!important}
+  .sections{gap:24px!important}
+  section{break-inside:auto;page-break-inside:auto}
+  h2{break-after:avoid;page-break-after:avoid}
+  .tw,pre,.note,.action,.mm,.node,.ovc,.seqscroll{break-inside:avoid;page-break-inside:avoid}
+  table{font-size:10.5px!important}
+  body{font-size:12.5px!important}
+  pre{font-size:10px!important}
+  .plate{break-after:page}
+  a{text-decoration:none}
+}
+@page{size:A4;margin:14mm 10mm}
+</style>
+
+</head>
+<body>
+
+
+<div class="shell">
+
+  <nav class="toc" aria-label="Contents">
+    <p>Contents</p>
+    <ol>
+      <li><a href="#s0"><span class="n">0</span><span>How to read this</span></a></li>
+      <li><a href="#s1"><span class="n">1</span><span>Resource inventory</span></a></li>
+      <li><a href="#s2"><span class="n">2</span><span>NOT USED</span></a></li>
+      <li><a href="#f1"><span class="n">F1</span><span>Order → Warranty</span></a></li>
+      <li><a href="#f2"><span class="n">F2</span><span>QR → Registration</span></a></li>
+      <li><a href="#f3"><span class="n">F3</span><span>Claim submission</span></a></li>
+      <li><a href="#f4"><span class="n">F4</span><span>Claim status</span></a></li>
+      <li><a href="#f5"><span class="n">F5</span><span>Pickup booking</span></a></li>
+      <li><a href="#f6"><span class="n">F6</span><span>Escalation</span></a></li>
+      <li><a href="#s3"><span class="n">3</span><span>Master call graph</span></a></li>
+      <li><a href="#s4"><span class="n">4</span><span>Sequence diagram</span></a></li>
+      <li><a href="#s5"><span class="n">5</span><span>Plain English</span></a></li>
+      <li><a href="#s6"><span class="n">6</span><span>Dependency map</span></a></li>
+    </ol>
+  </nav>
+
+  <header class="plate">
+    <div class="plate-top">
+      <p class="eyebrow">Runtime companion to the v1 technical reference</p>
+      <h1>WarrantyDesk Execution Trace</h1>
+      <p class="standfirst">Every resource, what invokes it, what it invokes next, what goes in and what comes out. Read from the live org — resources that do not exist are marked NOT USED rather than invented.</p>
+    </div>
+    <dl class="plate-grid">
+      <div class="plate-cell"><dt>Org</dt><dd>orgfarm-c98efaa88e<br>-dev-ed</dd></div>
+      <div class="plate-cell"><dt>Agent</dt><dd>Warranty_Claims_Agent<br>v4 · Active</dd></div>
+      <div class="plate-cell"><dt>Channel</dt><dd>AppleBusinessChat<br>Enhanced · active</dd></div>
+      <div class="plate-cell"><dt>Compiled</dt><dd>31 Aug 2026</dd></div>
+    </dl>
+  </header>
+
+  <div class="sections">
+
+    <!-- 0 -->
+    <section id="s0">
+      <h2><span class="n">§0</span> How to read this</h2>
+
+      <p>Every resource in this document is classified by the layer it belongs to. The classification matters because it tells you what kind of change each resource can absorb.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Layer</th><th class="wrap">Meaning</th><th class="wrap">Examples in WarrantyDesk</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip info">Entry point</span></td><td>Where something outside Salesforce starts a chain</td><td class="api">Order activation · QR scan · inbound Apple message</td></tr>
+            <tr><td><span class="chip info">Configuration</span></td><td>Declarative setup with no logic of its own; changes behaviour by existing</td><td class="api">MessagingChannel · QueueRoutingConfig · PermissionSet</td></tr>
+            <tr><td><span class="chip info">Orchestration</span></td><td>Decides what runs next but performs no business logic</td><td class="api">OrderWarrantyTrigger · warranty_router · Atlas planner</td></tr>
+            <tr><td><span class="chip info">Business logic</span></td><td>Validates, decides, computes, writes</td><td class="api">All six action classes · OrderWarrantyService</td></tr>
+            <tr><td><span class="chip info">Data layer</span></td><td>Where state lives</td><td class="api">Asset · Case · Contact · MessagingSession</td></tr>
+            <tr><td><span class="chip info">Human routing</span></td><td>Moves work to a person</td><td class="api">Warranty_Support queue · Available_Messaging</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The three-level naming in Agent Script</h3>
+      <p>This trips people up reading the agent, so it is worth stating once. Every agent action has <strong>three</strong> distinct names, and they are frequently different:</p>
+
+      <pre><code>reasoning.actions.find_products      ← the ALIAS the planner reasons about
+    ↓ points at
+actions.get_customer_assets          ← the DEFINITION (inputs, outputs, target)
+    ↓ target
+apex://GetCustomerAssetsAction       ← the IMPLEMENTATION (Apex class)</code></pre>
+
+      <p>Throughout this document, traces name all three so you can follow a call from the conversation to the SOQL.</p>
+
+      <div class="note">
+        <h4>Companion document</h4>
+        <p>This is the runtime view. The <em>WarrantyDesk Technical Reference</em> covers the same system as a static inventory — field definitions and why each exists, the security model, platform constraints, package.xml, and the storefront plan. Where the two overlap, this document is authoritative on <em>sequence</em> and the reference is authoritative on <em>rationale</em>.</p>
+      </div>
+    </section>
+
+    <!-- 1 -->
+    <section id="s1">
+      <h2><span class="n">§1</span> Resource inventory</h2>
+
+      <p>Every resource that exists in the implementation. Salesforce Location is the Setup path or object where you find it.</p>
+
+      <h3>Data layer — standard objects</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Invoked by</th><th class="wrap">Invokes</th><th class="wrap">Location</th></tr></thead>
+          <tbody>
+            <tr><td class="api">Order</td><td>Standard Object</td><td class="wrap">The purchase. Activation is the trigger point for the whole warranty chain.</td><td class="wrap">API seed today; storefront in v2</td><td class="wrap">OrderWarrantyTrigger</td><td class="wrap">Object Manager → Order</td></tr>
+            <tr><td class="api">OrderItem</td><td>Standard Object</td><td class="wrap">Line items. Quantity determines how many Assets are minted.</td><td class="wrap">Read by OrderWarrantyService</td><td class="wrap">—</td><td class="wrap">Object Manager → Order Product</td></tr>
+            <tr><td class="api">Asset</td><td>Standard Object</td><td class="wrap"><strong>The warranty record.</strong> One per physical unit. No custom Warranty object exists.</td><td class="wrap">OrderWarrantyService (create) · RegisterWarrantyAction (update)</td><td class="wrap">—</td><td class="wrap">Object Manager → Asset</td></tr>
+            <tr><td class="api">Case</td><td>Standard Object</td><td class="wrap"><strong>The claim record.</strong> No custom Claim object exists.</td><td class="wrap">CreateWarrantyClaimAction (create) · SchedulePickupAction (update)</td><td class="wrap">—</td><td class="wrap">Object Manager → Case</td></tr>
+            <tr><td class="api">Contact</td><td>Standard Object</td><td class="wrap">Customer identity. Every Asset is born linked to one.</td><td class="wrap">Read by all identity paths; email backfilled by RegisterWarrantyAction</td><td class="wrap">—</td><td class="wrap">Object Manager → Contact</td></tr>
+            <tr><td class="api">Account</td><td>Standard Object</td><td class="wrap">Customer organisation, copied onto Asset and Case</td><td class="wrap">Read only</td><td class="wrap">—</td><td class="wrap">Object Manager → Account</td></tr>
+            <tr><td class="api">Product2</td><td>Standard Object</td><td class="wrap">Catalogue item. Supplies the product name the agent speaks.</td><td class="wrap">Read by WarrantyDesk.productLabel</td><td class="wrap">—</td><td class="wrap">Object Manager → Product</td></tr>
+            <tr><td class="api">PricebookEntry<br>Pricebook2</td><td>Standard Object</td><td class="wrap">Required to create OrderItems. No warranty logic touches them.</td><td class="wrap">Order creation</td><td class="wrap">—</td><td class="wrap">Object Manager</td></tr>
+            <tr><td class="api">MessagingEndUser</td><td>Standard Object</td><td class="wrap">The Apple ID behind a conversation. Carries <code>ContactId</code> — the free-identity path.</td><td class="wrap">Platform on inbound message</td><td class="wrap">Read by WarrantyDesk.contactFromMessaging</td><td class="wrap">Object Manager → Messaging User</td></tr>
+            <tr><td class="api">MessagingSession</td><td>Standard Object</td><td class="wrap">One conversation. Source of the agent's linked variables.</td><td class="wrap">Platform on inbound message</td><td class="wrap">Agent linked variables · Omni routing on escalation</td><td class="wrap">Object Manager → Messaging Session</td></tr>
+            <tr><td class="api">ContentDocumentLink<br>ContentVersion</td><td>Standard Object</td><td class="wrap">Photo evidence on a claim. Declared but not yet wired — see F3.</td><td class="wrap">CreateWarrantyClaimAction (best effort)</td><td class="wrap">—</td><td class="wrap">Files</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Data layer — custom fields</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Written by</th><th class="wrap">Read by</th></tr></thead>
+          <tbody>
+            <tr><td class="api">Asset.Order__c</td><td>Lookup(Order)</td><td class="wrap">Traceability + idempotency key for asset minting</td><td class="wrap">OrderWarrantyService</td><td class="wrap">OrderWarrantyService (dedupe query)</td></tr>
+            <tr><td class="api">Asset.Warranty_Months__c</td><td>Number(3,0), def 12</td><td class="wrap">Warranty term per unit, so a longer term is a data change not a deploy</td><td class="wrap">OrderWarrantyService</td><td class="wrap">RegisterWarrantyAction</td></tr>
+            <tr><td class="api">Asset.Warranty_End_Date__c</td><td>Date</td><td class="wrap">Coverage end. Stored not formula, so corrections upstream cannot rewrite a commitment.</td><td class="wrap">RegisterWarrantyAction</td><td class="wrap">WarrantyDesk.warrantyActive · all three read actions</td></tr>
+            <tr><td class="api">Order.QR_Email_Sent__c</td><td>Checkbox</td><td class="wrap">Idempotency guard against re-activation re-mailing the customer</td><td class="wrap">OrderWarrantyService</td><td class="wrap">OrderWarrantyTrigger</td></tr>
+            <tr><td class="api">Case.Defect_Category__c</td><td>Picklist, restricted</td><td class="wrap">Structured defect type so reps can filter and report</td><td class="wrap">CreateWarrantyClaimAction</td><td class="wrap">GetClaimStatusAction</td></tr>
+            <tr><td class="api">Case.Claim_Stage__c</td><td>Picklist, restricted</td><td class="wrap">Claim lifecycle. Also the marker identifying a Case as a warranty claim.</td><td class="wrap">CreateWarrantyClaimAction · SchedulePickupAction</td><td class="wrap">GetClaimStatusAction · SchedulePickupAction (guard)</td></tr>
+            <tr><td class="api">Case.Pickup_Slot__c</td><td>DateTime</td><td class="wrap">Booked collection window from Apple's Time Picker</td><td class="wrap">SchedulePickupAction</td><td class="wrap">GetClaimStatusAction</td></tr>
+            <tr><td class="api">Case.Warranty_Claim</td><td>Record Type</td><td class="wrap">Separates claims from support cases</td><td class="wrap">CreateWarrantyClaimAction, conditionally</td><td class="wrap">List views (rep phase)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Business logic — Apex</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Invoked by</th><th class="wrap">Invokes</th></tr></thead>
+          <tbody>
+            <tr><td class="api">OrderWarrantyTrigger</td><td>Apex Trigger<br>after insert, after update</td><td class="wrap">Orchestration only. Filters to newly-activated, unmailed orders.</td><td class="wrap">Platform DML on Order</td><td class="wrap">OrderWarrantyService.handleActivation</td></tr>
+            <tr><td class="api">OrderWarrantyService<br>.handleActivation</td><td>Apex Method<br><code>static void</code></td><td class="wrap">Mints Assets, stamps guard flag, sends QR email</td><td class="wrap">OrderWarrantyTrigger</td><td class="wrap">sendQrEmails → buildHtml → qrImageUrl → appleDeepLink</td></tr>
+            <tr><td class="api">OrderWarrantyService<br>.appleDeepLink</td><td>Apex Method<br><code>static String</code></td><td class="wrap">Builds the <code>bcrw.apple.com</code> URL. Single place the Business ID appears.</td><td class="wrap">qrImageUrl · buildHtml</td><td class="wrap">—</td></tr>
+            <tr><td class="api">OrderWarrantyService<br>.qrImageUrl</td><td>Apex Method<br><code>static String</code></td><td class="wrap">Wraps the deep link in a quickchart.io QR URL</td><td class="wrap">buildHtml</td><td class="wrap">appleDeepLink</td></tr>
+            <tr><td class="api">OrderWarrantyService<br>.sendQrEmails</td><td>Apex Method<br><code>private static</code></td><td class="wrap">Resolves recipients, builds and sends. Swallows failures by design.</td><td class="wrap">handleActivation</td><td class="wrap">buildHtml · Messaging.sendEmail</td></tr>
+            <tr><td class="api">OrderWarrantyService<br>.buildHtml</td><td>Apex Method<br><code>private static</code></td><td class="wrap">Renders the HTML email body with one QR block per serial</td><td class="wrap">sendQrEmails</td><td class="wrap">qrImageUrl · appleDeepLink</td></tr>
+            <tr><td class="api">WarrantyDesk</td><td>Apex Class<br><code>without sharing</code></td><td class="wrap">Shared helper. Single definition of coverage, date formatting, identity matching.</td><td class="wrap">All six action classes</td><td class="wrap">SOQL on Asset, Contact, MessagingEndUser</td></tr>
+            <tr><td class="api">CheckSerialRegistrationAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Serial lookup. Returns found / registered / covered state.</td><td class="wrap">Agent action <code>check_serial</code></td><td class="wrap">WarrantyDesk.assetBySerial, warrantyActive, prettyDate, productLabel</td></tr>
+            <tr><td class="api">RegisterWarrantyAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Identity verification then warranty activation</td><td class="wrap">Agent action <code>register_warranty</code></td><td class="wrap">WarrantyDesk.assetBySerial, looksLikeEmail, nameMatches · DML on Asset, Contact</td></tr>
+            <tr><td class="api">GetCustomerAssetsAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Identity resolution + coverage inventory</td><td class="wrap">Agent action <code>find_products</code></td><td class="wrap">WarrantyDesk.contactFromMessaging, assetsForContact, warrantyActive</td></tr>
+            <tr><td class="api">CreateWarrantyClaimAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Claim validation and Case creation</td><td class="wrap">Agent action <code>create_claim</code></td><td class="wrap">WarrantyDesk.assetBySerial, warrantyActive, claimRecordTypeId · DML on Case, ContentDocumentLink</td></tr>
+            <tr><td class="api">GetClaimStatusAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Claim progress lookup by reference or identity</td><td class="wrap">Agent action <code>look_up_claim</code></td><td class="wrap">WarrantyDesk.contactFromMessaging · SOQL on Case</td></tr>
+            <tr><td class="api">SchedulePickupAction<br>.run</td><td>Apex <code>@InvocableMethod</code></td><td class="wrap">Pickup booking with approval-stage guard</td><td class="wrap">Agent action <code>book_pickup</code></td><td class="wrap">SOQL + DML on Case</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Agentforce layer</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Invoked by</th><th class="wrap">Invokes</th></tr></thead>
+          <tbody>
+            <tr><td class="api">Warranty_Claims_Agent</td><td>AiAuthoringBundle<br>+ BotDefinition <code>0Xxaj000003yg97CAA</code></td><td class="wrap">The agent. Source is one Agent Script file; publish generates the Bot.</td><td class="wrap">MessagingChannel.SessionHandlerId</td><td class="wrap">Its eight subagents</td></tr>
+            <tr><td class="api">v4</td><td>BotVersion <code>0X9aj000006mBVZCA2</code></td><td class="wrap">Active published version</td><td class="wrap">Runtime</td><td class="wrap">—</td></tr>
+            <tr><td class="api">warranty_router</td><td><code>start_agent</code> · Topic</td><td class="wrap">Entry subagent. Routing only — no business actions.</td><td class="wrap">Every new session</td><td class="wrap">7 <code>@utils.transition</code> actions</td></tr>
+            <tr><td class="api">registration</td><td>subagent · Topic</td><td class="wrap">Serial → confirm → name → email → register</td><td class="wrap"><code>go_to_registration</code></td><td class="wrap">remember_serial · check_serial · register_warranty</td></tr>
+            <tr><td class="api">claim_intake</td><td>subagent · Topic</td><td class="wrap">Seven-step claim filing with a hard description gate</td><td class="wrap"><code>go_to_claim</code> · <code>to_claim</code></td><td class="wrap">find_products · remember_defect · create_claim</td></tr>
+            <tr><td class="api">claim_status</td><td>subagent · Topic</td><td class="wrap">Claim progress reporting</td><td class="wrap"><code>go_to_status</code> · <code>check_first</code></td><td class="wrap">look_up_claim</td></tr>
+            <tr><td class="api">pickup_scheduling</td><td>subagent · Topic</td><td class="wrap">Collection slot booking</td><td class="wrap"><code>go_to_pickup</code> · <code>to_pickup</code></td><td class="wrap">book_pickup</td></tr>
+            <tr><td class="api">escalation</td><td>subagent · Topic</td><td class="wrap">Human handoff</td><td class="wrap"><code>go_to_escalation</code></td><td class="wrap"><code>@utils.escalate</code></td></tr>
+            <tr><td class="api">off_topic</td><td>subagent · Topic</td><td class="wrap">Redirect + anti-injection rule set. No actions.</td><td class="wrap"><code>go_to_off_topic</code></td><td class="wrap">—</td></tr>
+            <tr><td class="api">ambiguous_question</td><td>subagent · Topic</td><td class="wrap">One clarifying question. No actions.</td><td class="wrap"><code>go_to_ambiguous</code></td><td class="wrap">—</td></tr>
+            <tr><td class="api">remember_serial<br>remember_defect</td><td><code>@utils.setVariables</code></td><td class="wrap">The only two setters left. Each writes a variable a gate depends on.</td><td class="wrap">registration · claim_intake</td><td class="wrap">Agent variables</td></tr>
+            <tr><td class="api">@utils.transition</td><td>Built-in utility</td><td class="wrap">Subagent switching</td><td class="wrap">All routing subagents</td><td class="wrap">Target subagent</td></tr>
+            <tr><td class="api">@utils.escalate</td><td>Built-in utility</td><td class="wrap">Hands the session to Omni-Channel</td><td class="wrap">escalation and 4 other subagents</td><td class="wrap">MessagingChannel.FallbackQueueId</td></tr>
+            <tr><td class="api">system.instructions</td><td>Agent Script block</td><td class="wrap">Six global rules — see F3 for the two added after live failures</td><td class="wrap">Every turn</td><td class="wrap">—</td></tr>
+            <tr><td class="api">EndUserId · RoutableId<br>ContactId</td><td>linked variables</td><td class="wrap">Identity, sourced from MessagingSession / MessagingEndUser without asking</td><td class="wrap">Platform at session start</td><td class="wrap">find_products · look_up_claim</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Messaging &amp; Omni-Channel configuration</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Invoked by</th><th class="wrap">Invokes</th><th class="wrap">Location</th></tr></thead>
+          <tbody>
+            <tr><td class="api">APPLEBUSINESSCHAT_US_<br>45b81efd_1d6e_405a_<br>9547_7d8e8c34b8a8</td><td>MessagingChannel<br>Enhanced · Active</td><td class="wrap">The Apple entry point. <code>SessionHandlerId</code> is the whole agent-routing config.</td><td class="wrap">Apple, on inbound message</td><td class="wrap">Warranty_Claims_Agent · Warranty_Support on escalation</td><td class="wrap">Setup → Messaging Settings</td></tr>
+            <tr><td class="api">MsgChannelLanguageKeyword<br>3Oraj000001PPHBCA4</td><td>Channel data · en_US</td><td class="wrap">Consent keywords. Help = <code>help</code>; Opt-Out = <code>stop, unsubscribe, end, spam</code>. Handled by the platform before the agent sees the message.</td><td class="wrap">Platform on inbound message</td><td class="wrap">Auto-response, ends session</td><td class="wrap">Channel → Automated Responses</td></tr>
+            <tr><td class="api">sfdc_livemessage</td><td>ServiceChannel</td><td class="wrap">Standard Messaging work type</td><td class="wrap">Omni on escalation</td><td class="wrap">Presence matching</td><td class="wrap">Setup → Service Channels</td></tr>
+            <tr><td class="api">Apple_Routing<br>0K9aj000001n3tpCAA</td><td>QueueRoutingConfig<br>MostAvailable, weight 1</td><td class="wrap">How work is distributed within the queue</td><td class="wrap">Warranty_Support</td><td class="wrap">Available agents</td><td class="wrap">Setup → Routing Configurations</td></tr>
+            <tr><td class="api">Warranty_Support<br>00Gaj00000WJt81EAD</td><td>Queue (Group)</td><td class="wrap">Fallback queue for escalations. Supports MessagingSession + Case.</td><td class="wrap"><code>@utils.escalate</code> via FallbackQueueId</td><td class="wrap">Apple_Routing</td><td class="wrap">Setup → Queues</td></tr>
+            <tr><td class="api">Available_Messaging<br>0N5aj000001mfOUCAY</td><td>ServicePresenceStatus</td><td class="wrap">The status a human selects to receive conversations</td><td class="wrap">Human, in Omni widget</td><td class="wrap">—</td><td class="wrap">Setup → Presence Statuses</td></tr>
+            <tr><td class="api">ServiceChannelStatus<br>0NCaj000001zgg5GAA</td><td>Junction</td><td class="wrap">Binds the status to sfdc_livemessage. Without it the status routes nothing.</td><td class="wrap">Omni routing</td><td class="wrap">—</td><td class="wrap">Presence Status detail</td></tr>
+            <tr><td class="api">default_presence_config<br>0Ndaj000001d4SzCAI</td><td>PresenceUserConfig</td><td class="wrap">Capacity and behaviour. Pre-existing.</td><td class="wrap">Omni</td><td class="wrap">—</td><td class="wrap">Setup → Presence Configurations</td></tr>
+            <tr><td class="api">PresenceUserConfigUser<br>0Neaj0000005OuXCAU</td><td>Junction</td><td class="wrap">Puts Yashwanth Reddy in that configuration</td><td class="wrap">Omni</td><td class="wrap">—</td><td class="wrap">Presence Config detail</td></tr>
+            <tr><td class="api">LightningService</td><td>AppDefinition · Console</td><td class="wrap">Where a human handles the conversation. Standard app, unmodified.</td><td class="wrap">Human</td><td class="wrap">MessagingSession record</td><td class="wrap">App Launcher → Service Console</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Security</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="api">Resource</th><th>Type</th><th class="wrap">Purpose</th><th class="wrap">Assigned to</th></tr></thead>
+          <tbody>
+            <tr><td class="api">WarrantyDesk_Access<br>0PSaj00000c8UO1GAM</td><td>PermissionSet</td><td class="wrap">Object + field perms and <strong>Apex class access for all 8 classes</strong>. Without the class access the whole agent fails at session start.</td><td class="wrap">EinsteinServiceAgent User · Yashwanth Reddy</td></tr>
+            <tr><td class="api">WarrantyDesk_Support_Agent<br>0PSaj00000c8fw9GAA</td><td>PermissionSet</td><td class="wrap">Human side: LiveMessageAgent, LMEndMessagingSession, LightningConsole, ViewSetup, ViewRoles, CanInitiateMessagingSessions + MessagingSession / MessagingEndUser CRUD</td><td class="wrap">Yashwanth Reddy</td></tr>
+            <tr><td class="api">LiveMessageUserPsl</td><td>PermissionSetLicense</td><td class="wrap">Messaging User — the activation checklist's licensing requirement</td><td class="wrap">Yashwanth Reddy</td></tr>
+            <tr><td class="api">AgentforceServiceAgentUserPsl</td><td>PermissionSetLicense</td><td class="wrap">Lets the agent user run as a service agent</td><td class="wrap">EinsteinServiceAgent User</td></tr>
+            <tr><td class="api">EinsteinServiceAgent User<br>005aj00000aWlv7AAC</td><td>User</td><td class="wrap">The identity every agent action executes as. Timezone Asia/Kolkata so pickup windows format correctly.</td><td class="wrap">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="s2">
+      <h2><span class="n">§2</span> Explicitly NOT USED</h2>
+
+      <p>Each of these was checked against the org rather than assumed. Several are things a Salesforce reviewer would reasonably expect to find.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Resource type</th><th>Status</th><th class="wrap">Evidence and what replaces it</th></tr></thead>
+          <tbody>
+            <tr><td>Custom Objects</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">No <code>Warranty__c</code>, no <code>Claim__c</code>. Asset and Case carry both. Deliberate — see the reference doc §3.</td></tr>
+            <tr><td>Record-Triggered Flows</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">Tooling query on <code>Flow</code> returns one record: a stock <code>TransactionSecurityFlow</code> draft. All warranty automation is Apex.</td></tr>
+            <tr><td>Screen Flows</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">Same query. No UI flows exist.</td></tr>
+            <tr><td>Autolaunched Flows</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">The original design specified five as agent actions. Replaced by Apex <code>@InvocableMethod</code> classes — reference doc §10 has the reasoning.</td></tr>
+            <tr><td>Email Templates</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">28 <code>EmailTemplate</code> records exist, all stock Salesforce samples. The QR email HTML is assembled in <code>OrderWarrantyService.buildHtml</code> because it needs a loop over serials.</td></tr>
+            <tr><td>Prompt Templates</td><td><span class="chip stop">NOT USED</span></td><td class="wrap"><code>GenAiPromptTemplate</code> is not even a queryable type in this org. All agent language lives in the Agent Script.</td></tr>
+            <tr><td>Omni-Channel Skills</td><td><span class="chip stop">NOT USED</span></td><td class="wrap"><code>Skill</code> query returns zero. Routing is queue-based (<code>RoutingType</code> would be OmniQueue), not skills-based.</td></tr>
+            <tr><td>Named / External Credentials</td><td><span class="chip stop">NOT USED</span></td><td class="wrap"><code>NamedCredential</code> query returns zero. The only outbound call is the QR image URL, which the <em>recipient's mail client</em> fetches — Salesforce never makes it.</td></tr>
+            <tr><td>Approval Processes</td><td><span class="chip stop">NOT USED</span></td><td class="wrap"><code>ProcessDefinition</code> returns zero. Claim approval is the rep phase; today <code>Claim_Stage__c</code> is moved manually.</td></tr>
+            <tr><td>OmniScript · Integration Procedures · DataRaptors</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">OmniStudio is not installed in this org.</td></tr>
+            <tr><td>Experience Cloud site</td><td><span class="chip stop">NOT USED</span></td><td class="wrap"><code>/connect/communities</code> returns an empty list. Orders are API-seeded; the storefront is v2.</td></tr>
+            <tr><td><code>/w/{serial}</code> redirect page</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">Designed, then deleted by the Apple-only decision — its only job was branching iOS vs Android. The QR encodes the Apple link directly.</td></tr>
+            <tr><td>Platform Events · Queueable · Scheduled Apex</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">Everything runs synchronously in the trigger or the agent action.</td></tr>
+            <tr><td>Messaging Session record page</td><td><span class="chip warn">NOT BUILT</span></td><td class="wrap">Zero FlexiPages target MessagingSession. Reps get the standard layout. On Salesforce's checklist as recommended, not required.</td></tr>
+            <tr><td>Einstein Bot dialogs / intents</td><td><span class="chip stop">NOT USED</span></td><td class="wrap">This is an Agentforce Service Agent using Atlas reasoning, not a classic Einstein Bot. There are no dialog trees or intent sets.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- F1 -->
+    <section id="f1">
+      <h2><span class="n">F1</span> Order activation → warranty creation</h2>
+
+      <pre class="trace"><code>[Order.Status changed to 'Activated']
+  Type: Standard Object DML — ENTRY POINT
+  Why: The single event the entire warranty chain hangs off.
+       Source today is an API insert; in v2 it is the storefront checkout.
+  ↓ invokes
+[OrderWarrantyTrigger]
+  Type: Apex Trigger (after insert, after update) — ORCHESTRATION
+  Why: Platform hook. Contains no business logic, only a filter.
+  Filter: Status == 'Activated' AND QR_Email_Sent__c != true
+          AND (on update) NOT already-Activated-with-unchanged-flag
+  IN:  Trigger.new, Trigger.oldMap
+  OUT: List&lt;Order&gt; activated
+  ↓ invokes
+[OrderWarrantyService.handleActivation]
+  Type: Apex Method, static void — BUSINESS LOGIC
+  Why: All asset-minting and email logic in one testable place.
+  IN:  List&lt;Order&gt;
+  ↓ queries
+[Order + OrderItems]  — re-query with child OrderItems and contact fields
+[Asset WHERE Order__c IN :orderIds]  — existing serials, for de-duplication
+  ↓ loops
+  for each Order:
+    contactId = BillToContactId ?? ShipToContactId
+    for each OrderItem:
+      for i in 1..Quantity:
+        serial = 'SN-' + OrderNumber + '-' + (++seq)
+        skip if serial already exists
+  ↓ inserts
+[Asset]
+  Type: Standard Object — DATA LAYER
+  Why: One record per physical unit. THIS IS THE WARRANTY RECORD.
+  DATA IN: Name, SerialNumber, Status='Shipped', AccountId, ContactId,
+           Product2Id, Order__c, Warranty_Months__c=12
+  ↓ updates
+[Order.QR_Email_Sent__c = true]
+  Type: Custom Field (Checkbox) — DATA LAYER
+  Why: Idempotency. Re-activating the order must not re-mail the customer.
+  ↓ invokes
+[OrderWarrantyService.sendQrEmails]
+  Type: Apex Method, private static — BUSINESS LOGIC
+  IN:  List&lt;Order&gt;, Map&lt;Id, List&lt;String&gt;&gt; serialsByOrder
+  ↓ queries
+[Contact]  — FirstName, Email for each order's contact
+  Skips silently if the contact has no email.
+  ↓ invokes
+[OrderWarrantyService.buildHtml]
+  Type: Apex Method, private static — BUSINESS LOGIC
+  Why: One QR block per serial requires a loop, which an
+       Email Template cannot express. This is why no EmailTemplate exists.
+  ↓ invokes (per serial)
+[OrderWarrantyService.qrImageUrl]
+  ↓ invokes
+[OrderWarrantyService.appleDeepLink]
+  Type: Apex Method, static String — BUSINESS LOGIC
+  Why: The ONE place APPLE_BUSINESS_ID appears. Must stay in step with
+       MessagingChannel.MessagingPlatformKey.
+  OUT: https://bcrw.apple.com/urn:biz:45b81efd-1d6e-405a-9547-7d8e8c34b8a8
+       ?biz-intent-id=register_warranty&body=Register%20warranty%20SN-...
+  ↓ returns to qrImageUrl
+  OUT: https://quickchart.io/qr?ecLevel=Q&size=200&text=&lt;urlencoded deep link&gt;
+  ↓ returns to buildHtml → sendQrEmails
+  ↓ invokes
+[Messaging.sendEmail]
+  Type: Apex platform call — BUSINESS LOGIC
+  Why: Delivers the QR to the customer's inbox.
+  FAILURE: wrapped in try/catch that logs and swallows. A deliverability
+           setting must not roll back asset creation — the Assets are the
+           durable artifact and the email can be resent.
+[END]</code></pre>
+
+      <div class="note">
+        <h4>Where the QR image actually comes from</h4>
+        <p>Salesforce never calls quickchart.io. It writes an <code>&lt;img src&gt;</code> into the email body; the <em>recipient's mail client</em> makes that request when the customer opens the email. This is why no Named Credential or Remote Site Setting exists, and why the org has no outbound integration at all.</p>
+      </div>
+    </section>
+
+    <!-- F2 -->
+    <section id="f2">
+      <h2><span class="n">F2</span> QR scan → Apple Messages → registration</h2>
+
+      <pre class="trace"><code>[Customer scans QR in the warranty email]
+  Type: ENTRY POINT (outside Salesforce)
+  ↓ opens
+[Apple Messages, pre-filled]
+  Type: iOS app — ENTRY POINT
+  Why: biz-intent-id tags conversation origin; body pre-fills the message.
+  BODY: "Register warranty SN-00000101-1"
+  NOTE: In testing the scan is skipped by typing this string. It is
+        byte-for-byte identical input, not a simulation.
+  ↓ customer taps send → Apple delivers to
+[MessagingChannel
+ APPLEBUSINESSCHAT_US_45b81efd_1d6e_405a_9547_7d8e8c34b8a8]
+  Type: MessagingChannel, Enhanced, IsActive=true — CONFIGURATION / ENTRY
+  Why: The org's Apple endpoint. Matched by MessagingPlatformKey.
+  ↓ platform creates
+[MessagingEndUser]  — the Apple ID, carrying ContactId if resolvable
+[MessagingSession]  — this conversation
+  Type: Standard Objects — DATA LAYER
+  ↓ platform checks
+[MsgChannelLanguageKeyword 3Oraj000001PPHBCA4]
+  Type: Channel data — CONFIGURATION
+  Why: If the message is 'help' or 'stop/unsubscribe/end/spam' the platform
+       answers and ends the session. THE AGENT NEVER SEES IT.
+  ↓ no keyword match, so channel routes via
+[MessagingChannel.SessionHandlerId → 0Xxaj000003yg97CAA]
+  Type: Configuration field — this single field IS the agent routing
+  ↓ starts
+[Warranty_Claims_Agent v4 · BotDefinition]
+  Type: Agentforce Service Agent — ORCHESTRATION
+  Runs as: lead_creation@00daj000010qw9e1503930973.ext
+  ↓ platform binds linked variables
+  EndUserId  ← @MessagingSession.MessagingEndUserId
+  RoutableId ← @MessagingSession.Id
+  ContactId  ← @MessagingEndUser.ContactId
+  ↓ Atlas planner validates ALL actions across ALL subagents
+  FAILURE MODE: one missing Apex class grant in WarrantyDesk_Access
+                disables the ENTIRE agent, surfacing as a hang.
+  ↓ enters
+[warranty_router]
+  Type: start_agent subagent — ORCHESTRATION (Topic detection)
+  Why: Routing only. Instructed not to answer or call business actions.
+  DECIDES: first message contains a serial ⇒ registration
+  ↓ @utils.transition go_to_registration
+[registration]
+  Type: subagent — ORCHESTRATION (Topic)
+  ↓ reasoning action: remember_serial
+[@utils.setVariables]
+  Type: Built-in utility — ORCHESTRATION
+  Why: check_serial is GATED on serial_number, so the value must land
+       in a variable, not just be filled at call time.
+  SETS: @variables.serial_number = "SN-00000101-1"
+  ↓ reasoning action: check_serial   [available when serial_number != ""]
+[actions.check_serial → apex://CheckSerialRegistrationAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  serialNumber
+  ↓ calls
+  WarrantyDesk.assetBySerial → SOQL on [Asset] with Contact + Product2
+  WarrantyDesk.warrantyActive, prettyDate, productLabel
+  OUT: found, assetId, productName, assetStatus, alreadyRegistered,
+       warrantyActive, warrantyEndDate, contactFirstName, contactId, message
+  ↓ sets agent variables
+  serial_found, asset_id, product_name, already_registered,
+  warranty_end_date, customer_first_name
+  ↓ agent asks name, then email — one question per message
+  ↓ reasoning action: register_warranty   [available when serial_found == True]
+[actions.register_warranty → apex://RegisterWarrantyAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  serialNumber = @variables.serial_number
+       customerName = ...   (planner fills from conversation)
+       customerEmail = ...  (planner fills from conversation)
+  ↓ VALIDATION SEQUENCE — all before any DML
+  1. assetBySerial          → serial must exist
+  2. Status != 'Registered' → must not be already registered
+  3. looksLikeEmail         → regex format check
+  4. IDENTITY: email exact-match (case-insensitive, trimmed)
+               AND nameMatches (first OR last token) vs the Contact
+               on the order. Mismatch ⇒ needsEscalation=true, NO DML.
+  ↓ on pass, updates
+[Asset]
+  Status = 'Registered'
+  PurchaseDate = TODAY
+  Warranty_End_Date__c = PurchaseDate.addMonths(Warranty_Months__c)
+  ↓ conditionally updates
+[Contact.Email]  — backfilled ONLY if blank; never overwritten
+  OUT: success, needsEscalation, productName, serialNumber,
+       warrantyEndDate, message
+  ↓ sets
+  registration_done = @outputs.success
+  ↓ conditional instruction block fires on registration_done == True
+[Agent confirms to customer]
+  "Registered. Model X-200, serial SN-00000101-1, covered until 31 Aug 2027."
+  RULE: system instruction forbids saying this unless success == true.
+[END]</code></pre>
+    </section>
+
+    <!-- F3 -->
+    <section id="f3">
+      <h2><span class="n">F3</span> Existing customer → claim submission</h2>
+
+      <pre class="trace"><code>[Customer messages "my pump has stopped working"]
+  ↓ same channel → session → agent chain as F2
+[warranty_router]  → @utils.transition go_to_claim
+[claim_intake]
+  Type: subagent — ORCHESTRATION (Topic)
+  Why: Seven ordered steps. Step order is enforced by a GATE, not prose.
+  ↓ STEP 1 — reasoning action: find_products
+[actions.get_customer_assets → apex://GetCustomerAssetsAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  contactId          = @variables.ContactId    (empty in preview)
+       messagingEndUserId = @variables.EndUserId    (empty in preview)
+       customerEmail      = ...  (planner fills — NOT via a variable)
+  ↓ IDENTITY RESOLUTION, three fallbacks in order
+  1. Id.valueOf(contactId)                    — live Apple channel
+  2. WarrantyDesk.contactFromMessaging()      — SOQL on MessagingEndUser
+  3. SOQL [Contact WHERE Email = :em]         — preview / no session
+  ↓ if all three fail: message tells the agent to ask for a serial instead
+  ↓ queries
+  WarrantyDesk.assetsForContact → SOQL [Asset WHERE ContactId] LIMIT 50
+  ↓ for each Registered asset, evaluates WarrantyDesk.warrantyActive
+  OUT: assetCount, coveredCount, anyWarrantyActive,
+       singleCoveredAssetId  ← ONLY when exactly one is covered
+       singleCoveredAssetLabel, assetSummary (one line per product),
+       resolvedContactId, message
+  ↓ sets
+  warranty_active  = @outputs.anyWarrantyActive
+  claim_asset_id   = @outputs.singleCoveredAssetId
+  product_name     = @outputs.singleCoveredAssetLabel
+  ↓ STEP 2 — product selection
+  IF coveredCount == 1: claim_asset_id is populated, agent names it, moves on
+  IF coveredCount  > 1: claim_asset_id is EMPTY BY DESIGN. Agent lists
+                        assetSummary and the customer picks; the chosen
+                        serial is filled into create_claim at call time.
+  IF coveredCount == 0: STOP. Offer paid repair or a human. No claim.
+  ↓ STEP 3 — defect category
+  Agent offers exactly five: Not Working, Physical Damage, Missing Parts,
+  Wrong Item, Other
+  ↓ STEP 4 — reasoning action: remember_defect
+[@utils.setVariables]
+  SETS: @variables.defect_description = customer's own words
+  Why: THIS IS THE GATE. Without it create_claim is unavailable.
+  ↓ STEP 5 — photo request
+  Agent asks for one photo. If the customer cannot send one it continues.
+  NOT WIRED: nothing passes a ContentVersion Id into the action today.
+  ↓ STEP 6 — reasoning action: create_claim
+  [available when @variables.defect_description != ""]
+[actions.create_claim → apex://CreateWarrantyClaimAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  assetId       = @variables.claim_asset_id  (machine id, never invented)
+       serialNumber  = ...  (planner fills with the customer's choice)
+       defectCategory = ...
+       description   = @variables.defect_description
+  ↓ VALIDATION SEQUENCE — server side, independent of the script gate
+  1. Resolve asset: by Id first, then by serial. Neither ⇒ refuse.
+  2. WarrantyDesk.warrantyActive(asset) — expired ⇒ refuse, message
+     directs the agent to paid repair.
+  3. Category coerced to 'Other' if not one of the five valid values,
+     so a hallucinated category cannot write a bad picklist value.
+  4. description.trim().length() &lt; 15 ⇒ refuse. A rep cannot triage "broken".
+  ↓ on pass, inserts
+[Case]
+  Type: Standard Object — DATA LAYER. THIS IS THE CLAIM RECORD.
+  DATA IN: Subject   = 'Warranty claim - {product} ({serial}) - {category}'
+           Description = customer's words
+           AssetId, ContactId, AccountId  ← copied from the Asset
+           Defect_Category__c, Claim_Stage__c = 'Under Review'
+           Status = 'New', Priority = 'Medium'
+           RecordTypeId ← WarrantyDesk.claimRecordTypeId(), or omitted
+                          when isAvailable() is false
+  ↓ best effort, own try/catch
+[ContentDocumentLink]  — photo link. Failure must not lose a valid claim.
+  ↓ re-queries
+[Case.CaseNumber]  — auto-number, not returned by insert
+  OUT: success, caseNumber, caseId, message
+  ↓ sets
+  claim_filed = @outputs.success
+  claim_number = @outputs.caseNumber
+  ↓ STEP 7
+[Agent confirms with the reference]
+  RULE: system instruction forbids claiming a filing without a reference.
+[END]</code></pre>
+
+      <div class="note stop">
+        <h4>Where validation actually happens — read this before changing anything</h4>
+        <p><strong>Two independent layers, and they are not redundant.</strong></p>
+        <p>The <em>script gate</em> (<code>available when @variables.defect_description != ""</code>) makes the action invisible to the planner. Its job is to shape reasoning — the planner cannot choose an action it cannot see, so a skipped step becomes a wall it must back out of rather than a silent omission.</p>
+        <p>The <em>Apex guards</em> inside <code>CreateWarrantyClaimAction</code> re-check everything the gate implies, plus warranty validity, category validity and description length. Their job is to hold when the model is wrong, jailbroken, or when the action is called from anywhere other than the agent — including the REST invocable endpoint used for testing.</p>
+        <p>Removing either one leaves a real hole. The script gate alone can be reasoned around by a sufficiently persuasive conversation; the Apex guard alone produces the failure documented in the reference doc §13, where the agent cheerfully told a customer their claim was filed while the Apex was refusing it.</p>
+      </div>
+    </section>
+
+    <!-- F4 -->
+    <section id="f4">
+      <h2><span class="n">F4</span> Claim status lookup</h2>
+
+      <pre class="trace"><code>[Customer messages "any update on my claim?"]
+  ↓ channel → session → agent
+[warranty_router]  → @utils.transition go_to_status
+[claim_status]
+  Type: subagent — ORCHESTRATION (Topic)
+  ↓ reasoning action: look_up_claim   (ungated)
+[actions.claim_status → apex://GetClaimStatusAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  caseNumber         = ...  (planner fills if the customer quoted one)
+       contactId          = @variables.ContactId
+       messagingEndUserId = @variables.EndUserId
+  ↓ LOOKUP STRATEGY — reference first, identity second
+  IF caseNumber supplied:
+     cn = caseNumber.replaceAll('[^0-9]', '')     ← strips CLM-, spaces, #
+     SOQL [Case WHERE Claim_Stage__c != null
+                AND CaseNumber LIKE '%' + cn]     ← trailing match
+     Why: "CLM-00042", "claim 42" and "00001026" all resolve.
+  ELSE:
+     resolve Contact from contactId, else contactFromMessaging()
+     SOQL [Case WHERE ContactId = :cid AND Claim_Stage__c != null]
+  BOTH paths filter Claim_Stage__c != null
+  Why: keeps ordinary support Cases out of warranty answers even while
+       the Warranty_Claim record type is not yet profile-visible.
+  ORDER BY CreatedDate DESC LIMIT 10
+  ↓ if empty
+  OUT: found=false, message tells the agent to offer filing one instead
+  ↓ if found
+  OUT: found, claimCount, caseNumber, claimStage, defectCategory,
+       productName, filedOn (d MMM yyyy, h:mm a),
+       pickupSlot (EEEE d MMM, h:mm a — empty when unbooked),
+       claimSummary (one line per claim), message
+  ↓ sets
+  claim_number = @outputs.caseNumber
+  ↓ agent responds
+  Instructed to state reference, stage and filing time EXACTLY as returned,
+  and never to guess at a decision or a timeline.
+  ↓ optional transition
+[@utils.transition to_pickup → pickup_scheduling]
+  When: the claim is approved and the customer wants to book collection.
+[END]</code></pre>
+    </section>
+
+    <!-- F5 -->
+    <section id="f5">
+      <h2><span class="n">F5</span> Pickup slot booking</h2>
+
+      <pre class="trace"><code>[Rep approves the claim]
+  Type: MANUAL TODAY — rep phase not built.
+  Claim_Stage__c is moved to 'Approved-Pending-Pickup' by hand.
+  NOT USED: no Approval Process, no notification flow exists yet.
+  ↓ later, customer messages "book a pickup"
+[warranty_router]  → @utils.transition go_to_pickup
+  (or from claim_status via @utils.transition to_pickup)
+[pickup_scheduling]
+  Type: subagent — ORCHESTRATION (Topic)
+  ↓ SLOT AVAILABILITY
+  IMPORTANT: there is NO availability lookup resource. No calendar, no
+  Salesforce Scheduler, no service-territory query. The agent offers
+  upcoming weekday windows from its instructions, and the Apple Time
+  Picker returns whatever the customer chooses.
+  This is a v1 simplification, not an omission from this document.
+  ↓ reasoning action: book_pickup   (ungated)
+[actions.schedule_pickup → apex://SchedulePickupAction]
+  Type: Apex @InvocableMethod — BUSINESS LOGIC
+  IN:  caseNumber = ...        (planner fills)
+       pickupSlot = ...        (Datetime, from the Apple Time Picker)
+  ↓ VALIDATION SEQUENCE
+  1. cn = caseNumber stripped to digits; blank ⇒ refuse
+  2. SOQL [Case WHERE CaseNumber LIKE '%'+cn AND Claim_Stage__c != null]
+     ORDER BY CreatedDate DESC LIMIT 1 — none ⇒ refuse
+  3. Claim_Stage__c must equal 'Approved-Pending-Pickup'
+     Why: booking collection for an undecided claim would be a promise
+          the business has not made. Any other stage ⇒ refuse, and the
+          message names the actual stage so the agent can explain.
+  4. pickupSlot must not be in the past
+  ↓ on pass, updates
+[Case]
+  Pickup_Slot__c   = the chosen Datetime
+  Claim_Stage__c   = 'Pickup Scheduled'
+  OUT: success, caseNumber,
+       confirmedSlot (EEEE d MMM, h:mm a — formatted in the AGENT USER's
+       timezone, which is why it is set to Asia/Kolkata),
+       message
+  ↓ agent confirms
+  Instructed to use the window exactly as returned and to remind the
+  customer to keep the unit packed.
+[END]</code></pre>
+
+      <h3>Where conversation state actually lives</h3>
+      <p>The question of state comes up most sharply here, because a booking spans several turns. There are three distinct stores and they behave differently:</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Store</th><th class="wrap">Holds</th><th class="wrap">Lifetime</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Agent variables</strong></td><td class="wrap">Booleans that gate actions (<code>serial_found</code>, <code>defect_description</code>, <code>warranty_active</code>, <code>claim_filed</code>) and machine ids the model must not invent (<code>claim_asset_id</code>)</td><td class="wrap">One conversation session. Lost when the session ends.</td></tr>
+            <tr><td><strong>Salesforce records</strong></td><td class="wrap">Everything durable — <code>Asset.Status</code>, <code>Warranty_End_Date__c</code>, <code>Claim_Stage__c</code>, <code>Pickup_Slot__c</code></td><td class="wrap">Permanent. This is the real state machine.</td></tr>
+            <tr><td><strong>Conversation transcript</strong></td><td class="wrap">Values the planner fills at call time with <code>...</code> — email, chosen serial, customer name, defect category</td><td class="wrap">The session's message history.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>OmniScript state: NOT USED.</strong> No OmniStudio in this org.</p>
+
+      <div class="note">
+        <h4>The rule that decides which store a value goes in</h4>
+        <p>A value lives in an <em>agent variable</em> only when an <code>available when</code> guard depends on it, or when it is a record id the model must never fabricate. Everything else the customer says out loud is filled at the point of use from the transcript.</p>
+        <p>This was learned by getting it wrong. An ungated variable is one more step the planner can skip — and skipping it does not fail loudly, it produces a call with an empty parameter and a confident wrong answer. Reference doc §13 has the incident.</p>
+      </div>
+    </section>
+
+    <!-- F6 -->
+    <section id="f6">
+      <h2><span class="n">F6</span> Escalation to a human</h2>
+
+      <pre class="trace"><code>[Customer asks for a person, OR the agent fails to understand twice]
+  ↓ from ANY of five subagents
+  registration · claim_intake · claim_status · pickup_scheduling → escalate_now
+  warranty_router → @utils.transition go_to_escalation → [escalation]
+[escalation]
+  Type: subagent — ORCHESTRATION (Topic)
+  Instruction: say you are bringing in a colleague BEFORE escalating.
+  ↓ reasoning action: escalate_to_human
+[@utils.escalate]
+  Type: Built-in Agent Script utility — ORCHESTRATION
+  Why: Hands the live session to Omni-Channel. The agent stops responding.
+  ↓ platform reads
+[MessagingChannel.FallbackQueueId → 00Gaj00000WJt81EAD]
+  Type: Configuration field — HUMAN ROUTING
+  Why: MANDATORY whenever SessionHandlerId is an agent. The platform
+       rejects the channel config without it.
+  ↓ routes to
+[Warranty_Support · Queue (Group)]
+  Type: Queue — HUMAN ROUTING
+  Supported objects: MessagingSession, Case
+  Members: Yashwanth Reddy
+  ↓ distribution governed by
+[Apple_Routing · QueueRoutingConfig]
+  Type: Configuration — HUMAN ROUTING
+  Model: MostAvailable, capacity weight 1
+  ↓ Omni matches against
+[sfdc_livemessage · ServiceChannel]
+  Type: Standard configuration — HUMAN ROUTING
+  ↓ finds users present on that channel via
+[ServiceChannelStatus 0NCaj000001zgg5GAA]
+  → [Available_Messaging · ServicePresenceStatus]
+  Type: Configuration — HUMAN ROUTING
+  Why: Omni only pushes work to someone PRESENT on the matching channel.
+  ↓ capacity and behaviour from
+[default_presence_config · PresenceUserConfig]
+  ← [PresenceUserConfigUser 0Neaj0000005OuXCAU] binds Yashwanth Reddy
+  ↓ work item appears in
+[Omni-Channel widget, LightningService console app]
+  Type: Standard app — HUMAN ROUTING
+  ↓ human clicks Accept
+[MessagingSession]
+  Type: Standard Object — DATA LAYER
+  Why: THE SAME SESSION RECORD. The conversation does not restart.
+  The full transcript is on the record; the customer sees no seam and
+  their Apple thread is unchanged.
+  ↓ human replies in the console; messages flow back out through
+[MessagingChannel] → Apple → customer's Messages app
+[END]</code></pre>
+
+      <div class="note warn">
+        <h4>One link in this chain is not yet complete</h4>
+        <p><code>ServicePresenceStatusAccess</code> — the permission-set grant that lets a human actually select <strong>Available - Messaging</strong> — could not be created through any API available in this build. Until it is granted in Setup, or the permission set is deployed from metadata, an escalated conversation reaches <code>Warranty_Support</code> and waits there with nobody able to go available to receive it. Every other link above is in place and verified.</p>
+      </div>
+
+      <h3>How the handoff works, precisely</h3>
+      <p>There is no transfer of a record and no new conversation. <code>@utils.escalate</code> changes <em>who is answering</em> the existing <code>MessagingSession</code> — the agent detaches, Omni-Channel routes the same session as a work item, and a human takes ownership of it. Because the channel, the session and the customer's Apple thread are all unchanged, the customer experiences one continuous conversation in which the replies simply start coming from a person.</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="s3">
+      <h2><span class="n">§3</span> Master call graph</h2>
+
+      <p>This system has roughly forty-five resources and ten subsystems. A single auto-laid-out diagram of all of them is unreadable at any zoom — the density is the problem, not the type size — so the call graph lives as an interactive explorer instead.</p>
+
+      <div class="note">
+        <h4>Open the Call Graph Explorer</h4>
+        <p>Each of the six journeys below renders as its own legible chain, colour-coded by layer. Click any resource for its callers, what it calls, its inputs and outputs, and how it fails. A search box filters within a journey, and the Overview tab maps the ten subsystems.</p>
+        <p>The resources that appear in more than one journey are the joints of the system, and worth knowing by name: <code>Asset</code>, <code>Case</code>, <code>warranty_router</code> and <code>WarrantyDesk</code>.</p>
+      </div>
+
+      <h3>Subsystem summary</h3>
+      <p>The ten subsystems and where each is traced in full:</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>#</th><th class="wrap">Subsystem</th><th class="wrap">What it does</th><th>Traced in</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td class="wrap">Order &amp; Warranty Creation</td><td class="wrap">Order activation mints one Asset per unit — Apex trigger plus service class, no Flow</td><td>F1</td></tr>
+            <tr><td>02</td><td class="wrap">QR &amp; Email</td><td class="wrap">Deep link and QR built in Apex, emailed as HTML. No Email Template, no Named Credential.</td><td>F1</td></tr>
+            <tr><td>03</td><td class="wrap">Apple Messages</td><td class="wrap">The QR encodes <code>bcrw.apple.com</code> directly; no redirect page exists</td><td>F2</td></tr>
+            <tr><td>04</td><td class="wrap">Messaging Channel</td><td class="wrap">Enhanced AppleBusinessChat channel, active. <code>SessionHandlerId</code> is the whole agent routing config.</td><td>F2</td></tr>
+            <tr><td>05</td><td class="wrap">Agentforce Layer</td><td class="wrap">Warranty_Claims_Agent v4 and its eight subagents. Atlas reasoning, not Einstein Bot dialogs.</td><td>F2</td></tr>
+            <tr><td>06</td><td class="wrap">Registration</td><td class="wrap">Serial → identity verification against the order Contact → Asset flips to Registered</td><td>F2</td></tr>
+            <tr><td>07</td><td class="wrap">Claim Intake</td><td class="wrap">Seven ordered steps with a hard gate on the description before filing is possible</td><td>F3</td></tr>
+            <tr><td>08</td><td class="wrap">Claim Status</td><td class="wrap">Reference-first lookup with an identity fallback, always scoped to warranty claims</td><td>F4</td></tr>
+            <tr><td>09</td><td class="wrap">Pickup Booking</td><td class="wrap">Approval-stage guard, real DateTime from the Apple Time Picker. No availability system behind it.</td><td>F5</td></tr>
+            <tr><td>10</td><td class="wrap">Omni-Channel Escalation</td><td class="wrap">Same session, different responder. One link — presence access — still incomplete.</td><td>F6</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="s4">
+      <h2><span class="n">§4</span> Registration sequence diagram</h2>
+
+      <p>The QR-to-registered journey as a message-by-message sequence — nine participants, twenty-three messages, with the two failure modes that cost the most debugging time called out inline.</p>
+
+      <div class="note">
+        <h4>Also in the Call Graph Explorer</h4>
+        <p>The <strong>Sequence · Registration</strong> tab renders it at readable size with zoom controls, solid arrows for calls and dashed for returns. It is drawn as SVG rather than generated, so the type stays legible at every zoom level.</p>
+      </div>
+
+      <p>If you want the same content as text rather than a picture, <strong>F2</strong> above is the identical journey in trace form, with the inputs and outputs of every step written out.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="s5">
+      <h2><span class="n">§5</span> Plain English</h2>
+
+      <h3>What happens when a customer scans the QR code?</h3>
+
+      <p>The QR encodes an Apple URL, not a web page. Scanning it opens <strong>Apple Messages</strong> on the customer's iPhone with the message body already written — <code>Register warranty SN-00000101-1</code> — addressed to the business ID <code>45b81efd-1d6e-405a-9547-7d8e8c34b8a8</code>. That string was built by <code>OrderWarrantyService.appleDeepLink</code> when the order was activated. There is no redirect page and no web hop; the Apple-only decision removed the need for one.</p>
+
+      <p>The customer taps send. Apple delivers it to <strong>MessagingChannel <code>APPLEBUSINESSCHAT_US_45b81efd…</code></strong>, which is matched by that same business ID. The platform creates a <strong>MessagingEndUser</strong> for the Apple ID and a <strong>MessagingSession</strong> for the conversation, then checks the message against <strong><code>MsgChannelLanguageKeyword</code></strong> — if the customer had typed <code>stop</code> or <code>help</code>, the platform would answer and end the session, and the agent would never see it.</p>
+
+      <p>It didn't, so the channel reads <code>SessionHandlerId</code> and hands the session to <strong>Warranty_Claims_Agent v4</strong>, running as the Einstein agent user. Three linked variables bind automatically from the session, so the agent already knows who this is without asking. The Atlas planner then validates every action across every subagent — this is where a missing Apex class grant kills the whole agent rather than one action.</p>
+
+      <p>The message lands in <strong><code>warranty_router</code></strong>, which does nothing but route. It sees a serial number, recognises a QR scan, and transitions to <strong><code>registration</code></strong>. That subagent calls <strong><code>remember_serial</code></strong> to put the serial in a variable, which unlocks <strong><code>check_serial</code></strong> → <strong><code>CheckSerialRegistrationAction</code></strong>. That Apex reads the <strong>Asset</strong> through <strong><code>WarrantyDesk.assetBySerial</code></strong> and reports back three things: the serial exists, it isn't registered yet, and the first name on the order.</p>
+
+      <p>The agent asks for a name, then an email, one question per message. Then <strong><code>register_warranty</code></strong> → <strong><code>RegisterWarrantyAction</code></strong> runs four checks before touching anything: serial exists, not already registered, email is well-formed, and — the important one — the name and email match the Contact already on the order. If they don't, it returns <code>needsEscalation</code> and writes nothing. If they do, the Asset flips to <code>Registered</code> with a purchase date and a computed end date, and the agent confirms using only values the action returned.</p>
+
+      <h3>What happens when a customer files a claim?</h3>
+
+      <p>The router sends them to <strong><code>claim_intake</code></strong>, which runs seven ordered steps. Step one is always <strong><code>find_products</code></strong> → <strong><code>GetCustomerAssetsAction</code></strong>, which figures out who the customer is via three fallbacks — Contact id from the session, then MessagingEndUser, then the email they give — and returns what they own and what is still covered.</p>
+
+      <p>What happens next depends on the count. One covered product and the action returns <code>singleCoveredAssetId</code>, so the agent names it and moves on. Several and that field is deliberately empty; the agent lists them and the customer picks, and the chosen serial gets filled into the claim call from the transcript. None covered and it stops — no claim is filed and the agent offers paid repair.</p>
+
+      <p>Then the defect category, offered as exactly five choices. Then the description, recorded by <strong><code>remember_defect</code></strong> — and this is the load-bearing step, because <strong><code>create_claim</code></strong> carries <code>available when @variables.defect_description != ""</code>. Until a description exists the action is <em>invisible to the planner</em>. It cannot be skipped, only backed out of. Then a photo is requested, though nothing yet wires the file into the action.</p>
+
+      <p>Finally <strong><code>CreateWarrantyClaimAction</code></strong> re-checks everything server-side: it resolves the asset by id or serial, refuses if the warranty isn't active, coerces an invalid category to <code>Other</code>, and rejects a description under 15 characters. Only then does it insert the <strong>Case</strong> with the Contact and Account copied down from the Asset and <code>Claim_Stage__c = 'Under Review'</code>. It re-queries the CaseNumber, because the insert doesn't return an auto-number, and hands it back. The agent may only say the claim is filed once it has that reference in hand.</p>
+
+      <h3>What happens when escalation occurs?</h3>
+
+      <p>Five subagents can escalate, so the customer can ask for a person at almost any point. Each calls <strong><code>@utils.escalate</code></strong>, and the agent detaches from the conversation.</p>
+
+      <p><strong>Nothing is transferred and nothing restarts.</strong> The platform reads <code>FallbackQueueId</code> off the channel — mandatory whenever an agent is the session handler — and routes the <em>same</em> <strong>MessagingSession</strong> into <strong><code>Warranty_Support</code></strong> as an Omni-Channel work item. <strong><code>Apple_Routing</code></strong> decides distribution (MostAvailable), <strong><code>sfdc_livemessage</code></strong> is the work type, and Omni looks for someone present on that channel via <strong><code>Available_Messaging</code></strong>. The work item appears in the Omni widget in the <strong>Service Console</strong>, the human clicks Accept, and takes ownership of the session that already exists.</p>
+
+      <p>Because the channel, the session and the customer's Apple thread are all unchanged, the customer sees no seam — the replies simply start coming from a person, in the same thread, with the full transcript visible to the rep on the MessagingSession record.</p>
+
+      <p>One caveat that matters operationally: until <code>ServicePresenceStatusAccess</code> is granted, nobody can select <strong>Available - Messaging</strong>, so an escalated conversation reaches the queue and waits there indefinitely. Every other link is in place.</p>
+    </section>
+
+    <!-- 6 -->
+    <section id="s6">
+      <h2><span class="n">§6</span> Dependency map</h2>
+
+      <p>Start from any resource here and you can walk in either direction.</p>
+
+      <pre class="dep"><code>RESOURCE: OrderWarrantyTrigger  (Apex Trigger)
+USED BY:
+  - Salesforce platform, on after insert / after update of Order
+DEPENDS ON:
+  - Order.Status (standard picklist)
+  - Order.QR_Email_Sent__c (custom checkbox)
+CALLS:
+  - OrderWarrantyService.handleActivation
+RETURNS:
+  - void
+FAILURE HANDLING:
+  - None of its own. An exception in handleActivation rolls back the
+    Order DML that fired it — deliberate: an order must not be left
+    Activated with no warranty records.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: OrderWarrantyService.handleActivation  (Apex Method)
+USED BY:
+  - OrderWarrantyTrigger
+DEPENDS ON:
+  - Order, OrderItem, Asset, Contact
+  - Asset.Order__c, Asset.Warranty_Months__c, Order.QR_Email_Sent__c
+  - WarrantyDesk.STATUS_SHIPPED
+  - Constants APPLE_BUSINESS_ID, APPLE_INTENT_ID, DEFAULT_WARRANTY_MONTHS
+CALLS:
+  - sendQrEmails -> buildHtml -> qrImageUrl -> appleDeepLink
+  - Messaging.sendEmail
+RETURNS:
+  - void. Side effects: Asset inserts, Order flag update, email send.
+FAILURE HANDLING:
+  - Email send wrapped in try/catch, logged and swallowed.
+  - Serial collision skipped silently via the existing-serials set.
+  - Asset insert failures are NOT caught — they roll back the order
+    activation, which is the desired behaviour.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: WarrantyDesk  (Apex Class, without sharing)
+USED BY:
+  - CheckSerialRegistrationAction, RegisterWarrantyAction,
+    GetCustomerAssetsAction, CreateWarrantyClaimAction,
+    GetClaimStatusAction, OrderWarrantyService
+  - NOT invoked directly by any agent action
+DEPENDS ON:
+  - Asset, Contact, MessagingEndUser, Case record type metadata
+CALLS:
+  - SOQL only. No DML, no callouts.
+RETURNS:
+  - Asset, List<Asset>, Id, Boolean, String depending on member
+FAILURE HANDLING:
+  - claimRecordTypeId returns null rather than throwing when the record
+    type is invisible — this is what lets claims file today.
+  - assetBySerial returns null on blank or no match; every caller checks.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: CheckSerialRegistrationAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action check_serial, in subagent registration
+    [available when @variables.serial_number != ""]
+  - REST /actions/custom/apex/CheckSerialRegistrationAction (testing)
+DEPENDS ON:
+  - WarrantyDesk.assetBySerial, warrantyActive, prettyDate, productLabel
+  - Asset + Contact + Product2 read access via WarrantyDesk_Access
+CALLS:
+  - No other action. Terminal.
+RETURNS:
+  - found, assetId, productName, assetStatus, alreadyRegistered,
+    warrantyActive, warrantyEndDate, contactFirstName, contactId, message
+FAILURE HANDLING:
+  - Unknown serial is a normal result, not an error: found=false with
+    guidance text. No exceptions are thrown by design.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: RegisterWarrantyAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action register_warranty, in subagent registration
+    [available when @variables.serial_found == True]
+DEPENDS ON:
+  - WarrantyDesk.assetBySerial, looksLikeEmail, nameMatches, prettyDate
+  - Asset edit + Contact edit via WarrantyDesk_Access
+  - Asset.Warranty_Months__c to compute the end date
+CALLS:
+  - DML update on Asset; conditional DML update on Contact
+RETURNS:
+  - success, needsEscalation, productName, serialNumber,
+    warrantyEndDate, message
+FAILURE HANDLING:
+  - DmlException caught, returned as message with success=false.
+  - Identity mismatch returns needsEscalation=true with NO DML at all.
+  - Already-registered returns early with the existing end date.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: GetCustomerAssetsAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action find_products, in subagent claim_intake  (ungated)
+DEPENDS ON:
+  - WarrantyDesk.contactFromMessaging, assetsForContact,
+    warrantyActive, productLabel, prettyDate
+  - MessagingEndUser read access
+CALLS:
+  - SOQL only
+RETURNS:
+  - assetCount, coveredCount, anyWarrantyActive, singleCoveredAssetId,
+    singleCoveredAssetLabel, assetSummary, resolvedContactId, message
+FAILURE HANDLING:
+  - Invalid contactId string is caught and treated as unresolved.
+  - No identity at all returns a message telling the agent to ask for
+    a serial instead of guessing.
+  - Counts are Decimal, not Integer — Agent Script rejects Integer outputs.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: CreateWarrantyClaimAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action create_claim, in subagent claim_intake
+    [available when @variables.defect_description != ""]
+DEPENDS ON:
+  - WarrantyDesk.assetBySerial, warrantyActive, claimRecordTypeId,
+    productLabel, prettyDate
+  - Case create access; Case.Defect_Category__c, Claim_Stage__c
+  - Case.Warranty_Claim record type (optional — degrades to null)
+CALLS:
+  - DML insert on Case; best-effort insert on ContentDocumentLink
+  - SOQL re-query for CaseNumber
+RETURNS:
+  - success, caseNumber, caseId, message
+FAILURE HANDLING:
+  - Expired or unregistered warranty: refuses with paid-repair guidance.
+  - Description under 15 chars: refuses and asks for more.
+  - Invalid category: silently coerced to 'Other'.
+  - ContentDocumentLink failure: swallowed, claim survives.
+  - DmlException on Case: caught, returned as message with success=false.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: GetClaimStatusAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action look_up_claim, in subagent claim_status  (ungated)
+DEPENDS ON:
+  - WarrantyDesk.contactFromMessaging
+  - Case read access; Case.Claim_Stage__c as the claim marker
+CALLS:
+  - SOQL only
+RETURNS:
+  - found, claimCount, caseNumber, claimStage, defectCategory,
+    productName, filedOn, pickupSlot, claimSummary, message
+FAILURE HANDLING:
+  - No match is a normal result with guidance to offer filing one.
+  - Non-numeric reference is stripped to digits; blank result falls
+    through to the identity path.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: SchedulePickupAction  (Apex @InvocableMethod)
+USED BY:
+  - Agent action book_pickup, in subagent pickup_scheduling  (ungated)
+DEPENDS ON:
+  - Case edit access; Case.Claim_Stage__c, Case.Pickup_Slot__c
+  - Running user's timezone for confirmedSlot formatting
+CALLS:
+  - SOQL + DML update on Case
+RETURNS:
+  - success, caseNumber, confirmedSlot, message
+FAILURE HANDLING:
+  - Claim not at 'Approved-Pending-Pickup': refuses and names the
+    actual stage so the agent can explain.
+  - Slot in the past: refuses and asks for another.
+  - DmlException: caught, returned as message with success=false.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: APPLEBUSINESSCHAT_US_45b81efd_...  (MessagingChannel)
+USED BY:
+  - Apple, on every inbound customer message
+DEPENDS ON:
+  - MessagingPlatformKey matching the Apple Business Register account
+  - Apple-side provider connection approved (proven by activation)
+  - SessionHandlerId -> Warranty_Claims_Agent BotDefinition
+  - FallbackQueueId -> Warranty_Support (mandatory with agent routing)
+  - MsgChannelLanguageKeyword for consent handling
+CALLS:
+  - Warranty_Claims_Agent on normal messages
+  - Warranty_Support queue on escalation
+RETURNS:
+  - Outbound messages back to Apple
+FAILURE HANDLING:
+  - Consent keywords intercepted before the agent.
+  - Deactivating the channel stops inbound routing entirely.
+  - RoutingType / TargetQueueId / RoutingConfigurationId must remain
+    NULL — setting them alongside an agent SessionHandlerId is rejected.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: Warranty_Support  (Queue / Group)
+USED BY:
+  - MessagingChannel.FallbackQueueId, on @utils.escalate
+DEPENDS ON:
+  - QueueRoutingConfig Apple_Routing
+  - QueueSobject rows for MessagingSession and Case
+  - GroupMember: Yashwanth Reddy
+  - A user PRESENT on sfdc_livemessage via Available_Messaging
+CALLS:
+  - Omni-Channel work distribution
+RETURNS:
+  - A work item in the Omni widget
+FAILURE HANDLING:
+  - INCOMPLETE: without ServicePresenceStatusAccess granted, nobody can
+    go available and escalated sessions queue indefinitely.</code></pre>
+
+      <pre class="dep"><code>RESOURCE: WarrantyDesk_Access  (PermissionSet)
+USED BY:
+  - EinsteinServiceAgent User (every agent action execution)
+  - Yashwanth Reddy (admin visibility)
+DEPENDS ON:
+  - Nothing. It is the root of the agent's access.
+CALLS:
+  - N/A — configuration
+RETURNS:
+  - Object CRUD on Account, Asset, Case, Contact, Order; read on Product2
+  - Field access on all 7 custom fields
+  - Apex class access on all 8 classes
+FAILURE HANDLING:
+  - CRITICAL: missing Apex class access disables the ENTIRE agent at
+    planner startup, not just the affected action, and surfaces as the
+    agent hanging mid-conversation rather than as an error.
+  - No delete and no View All anywhere; the Einstein Agent User license
+    rejects View All outright.</code></pre>
+    </section>
+
+    <footer>
+      WarrantyDesk execution trace · companion to the v1 technical reference · agent v4 · compiled 31 August 2026. Resource existence and absence were both verified by query against <code>orgfarm-c98efaa88e-dev-ed</code>; nothing here is inferred from build notes.
+    </footer>
+
+  </div>
+</div>
+
+</body>
+</html>

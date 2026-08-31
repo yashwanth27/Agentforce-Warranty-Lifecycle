@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Minimal test agent created via the NextGen Authoring Connect API to verify headless agent creation.</description>
+    <localTopicLinks>
+        <genAiPluginName>main_16jaj0000035OzF</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>main_16jaj0000035OzF</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Greets users and explains that this is a test agent.</description>
+        <developerName>main_16jaj0000035OzF</developerName>
+        <genAiPluginInstructions>
+            <description>You are a simple test agent created via the NextGen Authoring API.</description>
+            <developerName>instruction0_179aj000004wO4T</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179aj000004wO4T</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>main</localDeveloperName>
+        <masterLabel>Main</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Claude Test Agent</masterLabel>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>

@@ -1,0 +1,21 @@
+{
+  "required" : [ "caseNumber", "pickupSlot" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "caseNumber" : {
+      "title" : "Claim Reference",
+      "description" : "Claim the pickup is for",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "pickupSlot" : {
+      "title" : "Pickup Slot",
+      "description" : "Collection window the customer chose",
+      "lightning:type" : "lightning__dateTimeStringType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

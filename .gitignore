@@ -1,0 +1,19 @@
+# Salesforce CLI local state — never commit, contains org auth references
+.sf/
+.sfdx/
+.localdevserver/
+deploy-options.json
+
+# Node
+node_modules/
+npm-debug.log
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Leftover scaffold file - delete this folder when convenient
+_to_delete/

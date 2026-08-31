@@ -1,0 +1,22 @@
+system:
+    instructions: "You are a simple test agent created via the NextGen Authoring API."
+    messages:
+        welcome: |
+            Hi, I'm a test agent created headlessly via MCP.
+        error: "Sorry, it looks like something has gone wrong."
+
+config:
+    agent_label: "Claude Test Agent"
+    agent_template: "SvcCopilotTmpl__AgentforceServiceAgent"
+    developer_name: "Claude_Test_Agent"
+    description: "Minimal test agent created via the NextGen Authoring Connect API to verify headless agent creation."
+
+access:
+    default_agent_user: "lead_creation@00daj000010qw9e1503930973.ext"
+
+start_agent main:
+    label: "Main"
+    description: "Greets users and explains that this is a test agent."
+    reasoning:
+        instructions: ->
+            | You are a test agent created via API. Greet the user, explain that you are a test agent with no business capabilities yet, and answer basic questions about yourself politely.
